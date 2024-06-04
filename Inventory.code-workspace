@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../pacmann2024"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Inventory"
+	}
+}
