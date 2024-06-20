@@ -1,0 +1,155 @@
+
+
+min(jam diposting) --> cek kalau posting dua kali sama dan jam berapa berapa menit yang lalu
+cek2 = semua input sama persis terakhir diposting kapan --> if(vExists) {return vExists} --> apa ini. menit 21:40
+
+display 10 transaksi terakhir aja --> limit 10?
+$lt:date -->less than $ne --> not equal
+
+tampilkan masing2 satu --> db.collection.distinct("name.namenested":value)
+
+cek sisa stok= 1. dihitung saat post. 2. changeStream cek resume changeStream (kyny ga us pakai changeStream)
+^kyny pakai atlas trigger. tapi jadi engga clean architecture dependent sama atlas. gpp lah.
+^^wah ternyata trigger on crud aja. Jadi kyny hitung di backend.
+
+cluster = JualBeli
+database = IntiCollection
+table = collection = JualBeli -->IntiCollection.JualBeli
+
+
+mongo
+https://www.youtube.com/watch?v=fbYExfeFsI0&t=138s 
+menit 28:00 ${result.matchedCount} ${result.modifiedCount} 
+{upsert:true} result.upsertCount ${result.upsertedId}
+{$exists:false} menit 34:00
+result.deletedCount
+sort menit 22
+syntax template https://github.com/mongodb-developer/nodejs-quickstart
+net ninja
+
+trik:
+1.
+upsert tahap pertama find param dulu jadi bisa .matchedCount untuk cek berapa yang matched lalu .modifiedCount untuk cek berapa yang di upsert
+2.
+variabel diisi function, bisa if kalau ada isi (berarti function dijalankan, dan ngisi variabel) else tidak ada isi (berarti function abort, variabel ga ada)
+https://www.youtube.com/watch?v=bdS03tgD2QQ menit 17:30
+3.
+list of trik https://www.youtube.com/watch?v=CnailTcJV_U
+comment soft delete, comment moderation, comment spam filter
+clean architecture #1: rules di export. file .js nya rules tidak import apapun menit 12.
+^tetep perlu fungsi dari luar, tapi disebutnya inject dependency? = tidak import. gimana itu ya
+^^kyny function yang perlu (dependent) import di run di tempat lain, hal2 yang ditandai export disini akan diimport file lain yang juga import dependency. --> nice work.
+^^yang diubah di file rule juga bukan variabel external atau id element html.
+^layer entity, use-case semua di satu folder src, menit 11:55 dibanding menit 26:30 
+^layer use-case semua .js diikat dalam index.js -->artinya export semua dari sini, setelah import use-case semua kesini.
+^later 3 interface adapter: bikin variabel fungsi2 biasa (find insert dll) yang dipakai layer 2--> supaya variabel itu bisa diisi 1 bahasa program (mongo) dan nanti diganti bahasa program lain (sql) tinggal ganti disini tanpa ada efek di layer 2 yang pakai find insert dll itu
+^^selain crud find insert dll, layer 3 juga bikin variabel yg diisi httpRequest dll menit 29
+^^ada index.js juga (file beda, anddap aja index-layer3.js) yang sama export semua dari sini setelah import semua layer 3 (adapter controller).
+lain2 cek:
+memory leak = eventEmitter node js, remove emitter ; timeout, taro di variabel agar bisa clearTimeout ; return di akhir jangan diisi diikuti reference ke variabel di luar file node js misalnya return req.vHeaders
+https://www.youtube.com/watch?v=YBnN2JpS4hI
+
+
+
+kode cara alternatif.
+insert ke text
+
+// var MongoClient = require('mongodb').MongoClient;
+// var url = "mongodb://localhost:27017/";
+
+// MongoClient.connect(url, function(err, db) {
+//   if (err) throw err;
+//   var dbo = db.db("mydb");
+//   var myobj = { name: "Company Inc", address: "Highway 37" };
+//   dbo.collection("customers").insertOne(myobj, function(err, res) {
+//     if (err) throw err;
+//     console.log("1 document inserted");
+//     db.close();
+//   });
+// });
+console.log(1+1);
+console.log(__dirname);
+console.log(__filename);
+
+const fs = require('fs');
+const { json } = require('stream/consumers');
+const aa =  JSON.stringify([
+  {
+      "nama":"yogi",
+      "umur":41,
+      "pets":[
+          { "animal":"dog", "name":"Fido" },
+          { "animal":"cat", "name":"Felix" },
+          { "animal":"hamster", "name":"Lightning" }
+      ]
+  },//'\n',
+  {
+    "nama":"uk",
+    "umur":41
+}])
+
+// const ab = JSON.stringify([
+//   {
+//       "nama":"uk",
+//       "umur":41
+//   }
+//   ])
+  const a = aa//+'\n'+ab;
+  console.log(a);
+fs.writeFile('bulanan.txt',a,()=>{
+  console.log('tulis');
+});
+
+
+const http = require('http');
+const vServer=http.createServer((req,res)=>{
+  console.log(req.url, req.method);
+  res.setHeader('content-type','text/html');
+  //res.write('ahoy');
+  // const baca=fs.readFile('JualBeli.html');
+  // console.log(baca);
+  let vPath ="";
+  switch (req.url) {
+    case '/':
+      vPath+='jualbeli.html';
+      console.log(vPath+'0');
+      break;
+    case '/about':
+      vPath+='about.html';
+      console.log(vPath+'2');
+      break;
+    default :vPath+='coba.html';
+    console.log(vPath+'3');
+    //fs.write req.url untuk catat orang nyasar kemana aja
+    break;
+  }
+  fs.readFile(vPath,(err,data)=>{
+    console.log('1'+vPath);
+    if (err) {
+      console.log('err');
+      res.end();
+    }else {
+      console.groupCollapsed('tulis html');
+      //res.write(data);
+      res.end(data);
+    }
+  });
+
+});
+vServer.listen(3000,'localhost',()=>{
+  console.log('listening port 3000 ya');
+});
+
+node js express
+const express = require('express');
+const vEx=express();
+vEx.use(express.json());
+//vEx.use(express.static('public'));
+vEx.listen(3300,()=>{console.log('listen port 3300 juga')});
+vEx.get('/apiBacaAwal',(req,res)=>{
+  console.log('klik catat berhasil')
+  res.json({nama:"yogi"});
+  res.sendFile('coba.html');
+  //fs.readfile trus res.send(vResult)  -----> next ini yang dikerjakan yogi
+  res.end();
+})

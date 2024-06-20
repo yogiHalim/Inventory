@@ -6,8 +6,22 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>coba</h1>
+    <h1 id="idCoba">coba</h1>
     <h2>adanya: link1: link2:</h2>
     <h2>Bantu laporkan alamat yang tidak ada halamannya: jangan lupa sanitize input (remove slash dll dari sini)</h2>
+    <button type="button" onclick="fAjax()">ajax</button>;
+    <script>
+        function fAjax(){
+            console.log('klik0');
+            const vXhr = new XMLHttpRequest();
+        vXhr.open("POST","/apiCoba");
+        console.log('post kirim2');
+        vXhr.setRequestHeader('Content-type','text/html');
+        vXhr.send();
+        vXhr.onload=function(){if(vXhr.status==200){
+            document.getElementById('idCoba').innerText=vXhr.responseText;
+        }};
+    };
+    </script>
 </body>
 </html>

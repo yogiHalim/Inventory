@@ -9,14 +9,14 @@
 <section id="JualBeli">
         <h1> Halaman masuk</h1>
         <div style="background-color: #f2f2f2c5; width:75mm;height:160mm; padding-top:80px; margin-left:1mm">
-        <form>
+        <form method="POST" action="/" >
             <button type="button" id="klikJualBeli" class="klik teks" style="background-color: #acffb5a9;color:#5d009b; margin-bottom:20px">Saat Ini Mencatat Jual</button>
                 <label>Nama Barang Terjual</label>
-                <input type="text" placeholder="Nama Barang Terjual" id="isiNamaBarang" class="teks"/>
+                <input type="text" placeholder="Nama Barang Terjual" id="isiNamaBarang" class="teks" name:"nama" />
                 <!-- <input type="text" id="isiNamaBarang" onkeyup="showHint(this.value)"/> -->
                 <!-- https://www.w3schools.com/xml/xml_http.asp -->
                 <label>Jumlah</label>
-                <input type="text" placeholder="Jumlah Dijual" id="isiJumlah" class="teks"/>
+                <input type="text" placeholder="Jumlah Dijual" id="isiJumlah" class="teks" name:"jumlah" />
             <button type="submit" id="klikCatat"> Catat. </button>
             <!-- <button type="submit" onclick="catat()" id="klikCatat"> Catat. </button> -->
         </form>
@@ -26,41 +26,67 @@
 <script>
     const vIsiNamaBarang = document.getElementById('isiNamaBarang');
     const vIsiJumlah = document.getElementById('isiJumlah'); 
-
-    window.onload=()=>{
-        console.log('script onload');
-        const vXHR = new XMLHttpRequest();
-        const vURL = "bulanan.txt";
-        //const uURL2 = "bulanan.json";
-        let vData = 0;
-        vXHR.onreadystatechange=function(){
-            if (this.readyState === 4 && this.status ===200) {
-            console.log(this.responseText);
-            vData = JSON.parse(this.responseText);
-            vIsiNamaBarang.placeholder=vData[0].nama;
-            vIsiJumlah.placeholder=vData[1].nama;
-            console.log(vData[1].nama);
-            }
-        }
-        
-        vXHR.open("GET",vURL,true);
-        vXHR.send();
-
-        const vKlikCatat=document.getElementById('klikCatat');
-        vKlikCatat.addEventListener('click',(e)=>{
-            e.preventDefault();
-            console.log('Hai');
-            // console.log(vData.nama);
-            vSimpan=1;
-           
-
-        })
-
-        
+    
+    const vBacaAwal=async (e)=>{
+        e.preventDefault();    
+       
+       
     }
-    // function catat(){
-    //     console.log('Hai2');
-    // }
+                        // onload=()=>{
+                        //     const vXHR=new XMLHttpRequest();
+                        //     vXHR.open("POST",)
+                        // }
+
+    // window.onload=()=>{
+    //     console.log('script onload');
+    //     const vXHR = new XMLHttpRequest();
+    //     const vURL = "bulanan.txt";
+    //     //const uURL2 = "bulanan.json";
+    //     vXHR.open("GET",vURL,true);
+    //     let vData = 0;
+    //     vXHR.onreadystatechange=function(){
+    //         if (this.readyState === 4 && this.status ===200) {
+    //         console.log(this.responseText);
+    //         console.log(bulanan);
+    //         //const wData = fetch("bulanan.txt");
+    //         //console.log(wData);
+    //         vData = JSON.parse(this);
+    //         vIsiNamaBarang.placeholder=vData[0].nama;
+    //         vIsiJumlah.placeholder=vData[1].nama;
+    //         console.log(vData[1].nama);
+    //         }
+    //     }
+        
+        
+    //     vXHR.send();
+    //}
+    const vKlikCatat=document.getElementById('klikCatat');
+                                // vKlikCatat.addEventListener('click',(e,fBaca)=>{
+                                //     e.preventDefault();
+                                //     console.log('Hai');
+                                //     // console.log(vData.nama);
+                                //     vSimpan=1;
+                                // const fBaca = '';
+                                //});
+           
+    vKlikCatat.addEventListener('click',(vBacaAwal));
+    //jangan string, post json!!!
+    //on click if max char stop, else run
+
+        
+    function catat(){
+        console.log('Hai2');
+        fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                    nama: vIsiNamaBarang,
+                    jumlah: vIsiJumlah
+            })
+});
+    }
 </script>
 <style>
     *{
