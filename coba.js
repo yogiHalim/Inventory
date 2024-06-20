@@ -33,6 +33,10 @@ vServer.listen(3000,'localhost',()=>{
     console.log('listening port 3000 ya');
 });
 
+vServer.listen('https://inticollection.azurewebsites.net/',()=>{
+  console.log('listening azure nih');
+});
+
 
 // const vServer2=http.createServer((req,res)=>{  
 //   console.log(req.url, req.method);
