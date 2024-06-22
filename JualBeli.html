@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entry Jual dan Entry Beli</title>
+</head>
+<body>
+    <section id="JualBeli">
+        <!-- <h1> Halaman masuk</h1> -->
+        
+        <div class="divHal" >
+            <div id="alertKu"> Hai di bawah sana</div>
+        <form method="POST" action="/" id='idForm'>
+            <button type="button" id="klikJualBeli" onclick="fKlikJualBeli()" class="klik teks" style="background-color: #acffb5a9;color:#5d009b; margin-bottom:20px;">Saat Ini Mencatat Jual</button>
+                <p id="pTgl">Tanggal</p>
+                <label>Nama Barang Terjual</label>
+                <input type="text" name="nama" id="isiNamaBarang" maxlength="7" class="teks" placeholder="Nama Barang Terjual" required />
+                <!-- <input type="text" id="isiNamaBarang" onkeyup="showHint(fHint)"/> -->
+                <!-- https://www.w3schools.com/xml/xml_http.asp -->
+                <label for="isiSatuan">satuan</label>
+                <input name="satuan" id="isiSatuan" maxlength="7" list="seringSatuan" required>
+                    <datalist id="seringSatuan">
+                        <option value="">belum diisi</option>
+                        <option value="500gr"></option>
+                        <option value="2kg"></option>
+                    </datalist>
+                </select>
+                <label>Jumlah</label>
+                <input type="text" name="jumlah" id="isiJumlah" maxlength="9" class="teks" placeholder="Jumlah Dijual" onkeyup="fTotal()" required/>
+                <label id="lHarga" for="isiHarga">Harga Jual</label>
+                <input name="harga" id="isiHarga" maxlength="9" list="seringHarga" onkeyup="fTotal()" required>
+                    <datalist id="seringHarga">
+                        <option value="">belum diisi</option>
+                        <option value="20000"></option>
+                    </datalist>
+            <button type="submit" id="klikCatat"> Catat. </button>
+            <button type="submit" id="klikCari"> Cari..</button>
+            <p id="pTotal">Total</p>>
+            <!-- <button type="submit" onclick="fCatat()" id="klikCatat"> Catat. </button> -->
+        </form>
+        </div>
+    </section>
+    <section style="margin-top:170mm" class="divHal">
+        <label>Halaman<br></label>
+        <button style="width:36mm">Sebelumnya</button>
+        <button style="width:36mm">Berikutnya</button>
+        <div id="divMuat" class="divHal">hai<br>
+        </div>
+    </section>
+    
+</body>
+<script>
+    document.querySelector('#pTgl').innerHTML=new Date().toLocaleString("id-id",{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'numeric'});
+    vTanggal=document.querySelector('#pTgl').innerHTML;
+    function fTotal(){document.querySelector('#pTotal').innerHTML='Total = Rp.'+new Intl.NumberFormat('id-id').format(document.querySelector('#isiJumlah').value*document.querySelector('#isiHarga').value);console.log('haiiii')};
+    let vJualBeli='Terjual';
+    function fKlikJualBeli(){
+        const isiKlikJualBeli=document.querySelector('#klikJualBeli')
+        if (isiKlikJualBeli.innerText=="Saat ini mencatat Beli") {
+        isiKlikJualBeli.innerText="Saat ini mencatat Jual"; vJualBeli='Dibeli'}
+        else {isiKlikJualBeli.innerText="Saat ini mencatat Beli"; vJualBeli='Terjual'};
+        document.querySelector('#lHarga').innerHTML='Harga '+vJualBeli;
+    };
+    const vIsiNamaBarang = document.querySelector('#isiNamaBarang');
+    const vIsiJumlah = document.querySelector('#isiJumlah'); 
+    const vIsiHarga=document.querySelector('#isiHarga')
+    
+    const fBacaAwal=async (e)=>{
+        //e.preventDefault();
+        const vXhr=new XMLHttpRequest();
+        await vXhr.open('POST','/apiBacaAwal');
+        vXhr.send();
+        vXhr.onload=function(){if(vXhr.status==200){
+            const vMuat1=JSON.parse(vXhr.responseText);
+            fTampil(vMuat1); 
+        }};
+    };
+    fBacaAwal();
+    function fHapus(vIdHapus){
+        const vTanya=window.confirm("Lanjut hapus?"); //pakai div position:absolute trus enter textbox hapus
+        if (vTanya){
+            // const vXhr=new XMLHttpRequest();
+            // vXhr.open('POST','/apiHapus');
+            // vXhr.send(vIdHapus);
+        }
+    };
+    function fTampil(vMuat){
+        const vDivMuat=document.querySelector('#divMuat');
+        while(vDivMuat.firstChild){
+                    vDivMuat.firstChild.remove()
+                };
+        for (let i=0; i<vMuat.length;i++){
+            const vSpanTgl = document.createElement('span');
+            vSpanTgl.innerHTML=vMuat[i].tanggal+' Hapus?'; //<span style="position:absolute;right:0;content'';width:100%"></span>,
+            vSpanTgl.setAttribute('id','spanTgl');
+            // const vSpanHapus=document.createElement('span');
+            // vSpanHapus.innerHTML=' Hapus?';
+            vSpanTgl.setAttribute('onclick',`fHapus("${vMuat[i]._id}")`);
+            const vSpanNama=document.createElement('span');
+            vSpanNama.innerText=vMuat[i].nama;
+            vSpanNama.setAttribute('class','cSpan');
+            const vSpanJumlah=document.createElement('span');
+            vSpanJumlah.innerHTML=vMuat[i].jumlah+' px.'+'Total : Rp.'+new Intl.NumberFormat('id-id').format(vMuat[i].jumlah*vMuat[i].harga);
+            vSpanJumlah.setAttribute('class','cSpan');
+            vDivMuat.appendChild(vSpanTgl);
+            //vDivMuat.appendChild(vSpanHapus);
+            vDivMuat.appendChild(vSpanNama);
+            vDivMuat.appendChild(vSpanJumlah);
+        };
+    };
+
+    const fCari=async (e)=>{
+        e.preventDefault();
+        window.location.href='#divMuat';
+        const vXhr = new XMLHttpRequest();
+        vXhr.open("POST","/apiTampil");
+        vXhr.setRequestHeader('Content-type','text/plain');
+        let vCari=JSON.stringify({nama:vIsiNamaBarang.value});
+        vXhr.send(vCari);
+        vXhr.onload=function(){if(vXhr.status==200){
+            const vMuat1=JSON.parse(vXhr.responseText);
+            fTampil(vMuat1);
+        }};
+    };
+
+    const fCatat=async (e)=>{
+        e.preventDefault();
+        const vXhr=new XMLHttpRequest();
+        vXhr.open('POST','/apiCatat');
+        const vForm=document.forms[0];
+        var vCatat=[];
+        for (let i=1;i<=4;i++){
+        console.log(i,'for i');
+            vKey=vForm[i].name;
+            vValue=vForm[i].value;
+            vGabung={[vKey]:vValue};
+            vCatat={...vCatat,...vGabung};
+        };
+        vCatatTgl={tanggal:vTanggal,...vCatat};
+        vCatatString=JSON.stringify(vCatatTgl);
+        console.log(vCatatString);
+        //vXhr.send(vCatatString); 
+    };
+
+    const vKlikForm=document.querySelector('#idForm');
+    vKlikForm.addEventListener('submit',function(event){
+        const vKlikTombol = event.submitter.getAttribute('id');
+        switch(vKlikTombol){
+            case "klikCatat":
+                fCatat(event);
+            case "klikCari":
+                fCari(event);
+            case "klikLain":
+                break;
+            default:
+                console.log('jalan setelah semua case, kecuali yg di break;')
+                break;
+        }
+    })
+
+    // const vKlikCatat=document.querySelector('#klikCatat');
+    // const vKlikCari=document.querySelector('#klikCari');
+    // vKlikCatat.addEventListener('click',(fCatat));
+    // vKlikCari.addEventListener('click',(fCari));
+
+    //jangan string, post json!!!
+    //on click if max char stop, else run
+
+        
+    function catat(){
+        console.log('Hai2');
+        fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                    nama: vIsiNamaBarang,
+                    jumlah: vIsiJumlah
+            })
+        });
+    }
+    //ambil indeks pertama json document
+        // vIsiNamaBarang.value=JSON.parse(vXhr.responseText)[0].nama;
+        // vIsiJumlah.placeholder=JSON.parse(vXhr.responseText)[0].umur;
+</script>
+<style>
+    /* ubah warna dengan variabel onklik muat warna dari filetxt*/
+    /* document.documentElement.style.setProperty('--primary-color', '#00FFFF'); */
+    *{
+        height:40px; width:279px;
+        font-size: 14px; color: #5d009b;
+        border-radius: 5px; box-sizing: border-box;
+    }
+    .teks{
+        padding-left:10px;
+        /* background-image: url('searchicon.png'); */
+    }
+    .klik{
+        height:40px; width:175px;
+        font-size: 14px; font-weight:700; border: #02130b;
+    }
+    .klikJual{
+    border-bottom: #34d044;
+    }
+    .klikBeli{
+    border-bottom: #34d044;
+    }
+    .divHal{
+        background-color: #f2f2f2c5; width:75mm;height:160mm; padding-top:80px; margin-left:1mm;
+    }
+    .cSpan{
+        width:50ch; display:inline-block; height:25px;padding-top: 5px;
+    }
+    #spanTgl{
+        position:relative;display:inline-block; height:35px;padding-top:15px;
+    }
+    #spanTgl::after{
+        position:relative;right:0;content:'';width:100%;
+    }
+    #spanTgl:active,#spanTgl:active+.cSpan,#spanTgl:active+.cSpan+.cSpan{
+        background-color: #da4cec;
+    }
+    #alertKu{
+        position:absolute; margin-top: 220px; margin-left: 10% ; height:45px; padding-top: 15px; padding-left: 5mm;background-color: aliceblue; top:50px; width:80%;
+    }
+
+    button[type="submit"]{
+        margin-top:10px;
+        border:chartreuse;
+        width:74mm;
+    }
+    button[type="submit"]:hover {
+    background-color: #640a85;
+    font-weight: bolder;
+    }
+    button[type="submit"]:active {
+    background-color: #45a049;
+    font-weight: bolder;
+    }
+    
+
+    input[type=text], select {
+    width:74mm;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-bottom: #34d044;
+    border-radius: 4px;
+    /* font-weight: bolder; */
+    }
+    input[type=text]:focus {
+    background-color: rgba(32, 178, 112, 0.131); /*bisa color bisa border weight */
+    /* https://www.w3schools.com/css/css_form.asp */
+    }
+</style>
+</html>
