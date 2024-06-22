@@ -1,13 +1,4 @@
-const vPath=__dirname+'\\bulanan.txt';
-const wPath=__dirname;
-//const zPath=wPath+%5C+vPath;
 
-console.log(vPath);
-console.log(wPath);
-//console.log(zPath);
-
-//const vResponse = fetch(vPath);
-//console.log(vResponse);
 let v1 = 0;
 const vHttp = require('http');
 const fs=require('fs');
@@ -24,7 +15,6 @@ console.log('ke if post',v1++);
 if (req.method==='POST' && req.url==='/apiCoba'){
   res.writeHead(200,{'Content-Type':'text/plain'}); //ganti dari text/html
   res.write('haiiiii');
-  console.log('post ini yaay');
   res.end();
 };
 });
