@@ -1,1 +1,0 @@
-[{"nama":"yogi","umur":41,"pets":[{"animal":"dog","name":"Fido"},{"animal":"cat","name":"Felix"},{"animal":"hamster","name":"Lightning"}]},{"nama":"uk","umur":41}]
