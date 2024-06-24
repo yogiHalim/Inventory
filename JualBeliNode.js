@@ -1,6 +1,6 @@
 const fs = require('fs');
 const { MongoClient, ServerApiVersion , ObjectId } = require('mongodb');
-
+//dependency dicut dari package.json     "@google-cloud/functions-framework": "^3.4.0",
 fUtama().catch(console.error);
 
 async function fUtama(){
@@ -22,12 +22,7 @@ async function fUtama(){
   //   await vClient.close();
   // }
   console.log('connected');
-                
-  // async function fInputJualBeli(vClient,vData){
-  //   const vDataDisimpan = await vClient.db("IntiCollection").collection("JualBeli").insertMany(vData);
-  //   console.log(vDataDisimpan.insertedId);
-  //   console.log("count yang disimpan",vDataDisimpan.insertedCount, vDataDisimpan.insertedIds);
-  // }
+  
   async function fDaftarDBS(vClient){
     const vDaftarDBS = await vClient.db().admin().listDatabases();
     vDaftarDBS.databases.forEach(db => {
@@ -45,11 +40,11 @@ async function fUtama(){
       let vPath ="./";
       switch (req.url) {
         case '/':
-          vPath+='jualbeli.html';
+          vPath+='JualBeli.html'; //case sensitive di cloud, engga di local
           console.log(vPath+'0');
           break;
         case '/about':
-          vPath+='bulanan.txt';
+          vPath+='package.json';
           console.log(vPath+'2');
           break;
         default :vPath+='coba.html';
@@ -62,7 +57,7 @@ async function fUtama(){
         //console.log('1'+this.responseText+data);
         if (err) {
           res.writeHead(404, {'Content-Type': 'text/html'});
-          return res.end("404 Not Found");
+          return res.end("404 Not Found kan ya");
         } 
         res.writeHead(200, {'Content-Type': 'text/html'});
         res.write(data);
@@ -77,18 +72,18 @@ async function fUtama(){
       res.writeHead(200,{'Content-Type':'text/json'});
       res.write(JSON.stringify(vCursor));
       res.end();
-      vClient.close();
+      await vClient.close();
     };
     async function fCatat(vClient,vCatat2){
       await vClient.connect();
       await vClient.db('IntiCollection').collection('JualBeli').insertOne(vCatat2);
-      vClient.close();
+      await vClient.close();
     }
     async function fHapusDiDb(vClient,vIdHapus){
       await vClient.connect();
       const vTerhapus=await vClient.db("IntiCollection").collection("JualBeli").deleteOne({_id:new ObjectId(vIdHapus)})
       console.log(vTerhapus,vIdHapus);
-      vClient.close();
+      await vClient.close();
     }
 
     if (req.method==='POST' && req.url==='/apiBacaAwal'){
@@ -128,14 +123,17 @@ async function fUtama(){
       })
     }
   });
-
-  vServer.listen(3000,'localhost',()=>{
-    console.log('listening port 3000 ya');  
+  //ip rumah mncplay=http://123.253.233.130
+  //ip website jualbeli google cloud http://142.251.221.148
+  //sonic-stratum-427310-p3.et.r.appspot.com
+  const PORT = process.env.PORT || 8080;
+  vServer.listen(PORT,()=>{
+    console.log('listening port '+PORT+' ya');  
   });
 
 //vClient.close(); //-->?
 };
-
+ 
 //cek cek cek
 //cek vResult.find().sort({createdAt:-1}) --> descending
 
