@@ -63,11 +63,12 @@ async function fUtama(){
         res.write(data);
         res.end();
       });
+      //scan dari qrcode req.url ambil nama barang, fBaca(), onload status==200 nama barang=this.response --> cek this respon nya fs readFile apa fBaca();
     };
 
     async function fBaca(vClient,vCari){
       await vClient.connect();
-      const vCursor= await vClient.db("IntiCollection").collection("JualBeli").find({nama:vCari}).limit(7).sort({tanggal:-1}).toArray();
+      const vCursor= await vClient.db("IntiCollection").collection("JualBeli").find({nama:vCari}).limit(6).sort({tanggal:-1}).toArray();
       if (vCursor){console.log("ada",vCursor.nama,vCursor.umur,vCursor.matchedCount,vCursor,JSON.stringify(vCursor));}else{console.log("tidak ada")};
       res.writeHead(200,{'Content-Type':'text/json'});
       res.write(JSON.stringify(vCursor));

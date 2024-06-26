@@ -105,6 +105,15 @@ tv changhong
 304mm window width 1730mm screen width
 725mm window height 973mm screen height
 
+samsung s23
+488mm window width 360mm screen width
+894mm window height 780mm screen height
+ratio 1:1.83 window 1:2.1667
+/* samsung s23 ratio width:height=68:144 mm*/ 425ppi resolusi 2340:1080 aspect ratio 19.5 : 9 = 2.1667
+= 5.506 inches : 2.54 inches dari 425ppinch tadi -->dibagi diagonal 6,06 inches
+=139.85mm : 64.55mm = 28 ppscm pixel per squared centimeter
+1cm = 8 pixel
+
 
 kode cara alternatif.
 coba qrcode1

@@ -23,7 +23,7 @@
         }
     
         .divHal{
-            background-color: #f2f2f2c5; position:absolute; width:93mm;height:160mm; padding:30px 0 0 0;  z-index: 1; /*margin-left:1mm;*/
+            background-color: #f2f2f2c5; position:absolute; width:93mm;height:160mm; padding:30px 0 0 0;  /*z-index: 1; /*margin-left:1mm;*/
         }
         /* samsung s23 ratio width:height=65:115 */
         .cSpan{
@@ -46,7 +46,7 @@
             background-color: #da4cec;
         }
         #alertHapus{
-            position:absolute; margin-top: /*2*/20mm; margin-left: 0mm ; height:180px; padding-top: 15px; background-color: aliceblue; z-index: 2;; width:75mm;
+            position:absolute; margin-top: 270mm; margin-left: 0mm ; height:180px; padding-top: 15px; background-color: aliceblue; opacity:1; z-index: 2; width:75mm;
         }
         #alertHapus span{
             padding-left: 5mm; margin:0; height:18px; padding:2px 0px; position:relative;left:3mm;
@@ -80,10 +80,11 @@
         background-color: rgba(32, 178, 112, 0.131); /*bisa color bisa border weight */
         /* https://www.w3schools.com/css/css_form.asp */
         }
-        /* div{opacity:0}; */
-        .toggleTanyaHapus{
+        /* div{opacity:0}; width:unset;*/
+        .cToggleTanyaHapus{
             visibility: hidden; background-color:rgb(189, 144, 84);
         }
+        
     </style>
   
 </head>
@@ -92,11 +93,10 @@
         <!-- <h1> Halaman masuk</h1> -->
         
         <div class="divHal" >
-            <!-- <div id="divQR">QR</div> -->
-            <div id="alertHapus" class="toggleTanyaHapus" > <span>Hapus yang ini: </span> <span onclick='fTanyaHapus()' style="position:relative; top:-2mm;left:43mm; font-size:22px">X</span><br>
+            <div id="alertHapus" class="cToggleTanyaHapus" > <span>Hapus yang ini: </span> <span onclick='fToggleTanyaHapus();document.querySelectorAll("#divMuat span").forEach(function(element){element.style.backgroundColor="transparent";})' style="position:relative; top:-2mm;left:43mm; font-size:22px">X</span><br>
                 <span>ketik hapus <br> untuk lanjut hapus yang dipilih</span> <br> 
-                <input id="ketikHapus" maxlength="5" type="text" />
-                <button type="button" class="tombolKecil" onclick="fHapus();fTanyaHapus()">Hapus</button><button onclick='fTanyaHapus()' type="button" class="tombolKecil">ndak jadi</button>
+                <input id="ketikHapus" maxlength="5" type="text" style="width:71mm" />
+                <button type="button" class="tombolKecil" onclick="fHapus();">Hapus</button><button onclick='fToggleTanyaHapus();' type="button" class="tombolKecil">ndak jadi</button> 
             </div>
             <form method="POST" action="/" id='idForm' style="width:calc(100% - 2mm);"><!--;fTanyaHapus() -->
             <button type="button" id="klikJualBeli" onclick="fKlikJualBeli();" class="klik teks" style="background-color: #acffb5a9;color:#5d009b; margin-bottom:20px;">Saat Ini Mencatat Jual</button>
@@ -127,9 +127,9 @@
             <!-- <a class="cPindahHal" style="width:4mm; height:10mm; background-color: #02130b2a; border-radius: 0px;">ksijy<br>ksijy<br></a> -->
             <a href="#hal2" class="cPindahHal">Lihat Transaksi <br><br></a>
             <!-- fQrScan() -->
-            <a href="#hal3" class="cPindahHal">Lihat Bagian Scan QRcode<br></a>
-            <label id="lImgQr">Ketik di Nama Barang lalu tunggu QRCode dimuat <br></label>
-            <img id="imgQr" alt="QR Code" src="QRcodeIntiCollection.png"; class="cImgQr">
+            <a href="#hal3" style="visibility: hidden;" class="cPindahHal">Lihat Bagian Scan QRcode<br></a>
+            <label id="lImgQr" onclick="location.href='#hal3'">Ketik di Nama Barang lalu tunggu QRCode dimuat <br></label>
+            <img id="imgQr" alt="QR Code" src="https://storage.googleapis.com/icongambar/QRcodeIntiCollection.png"; class="cImgQr">
         </div>
     </section>
     <section id='hal2' style="margin-top:240mm; position:absolute;" class="divHal">
@@ -150,16 +150,18 @@
 </body>
 <!-- /* ubah warna dengan variabel onklik muat warna dari filetxt*/
 /* document.documentElement.style.setProperty('--primary-color', '#00FFFF'); */ -->
-<script>if(document.querySelector('#idForm').contains(document.querySelector('#isiNamaBarang'))){alert('ya parent')}</script>
+
 <script>
     //script css dan cosmetics
     document.addEventListener('touchmove',fTidakScroll,{passive:false});
     function fTidakScroll(event){event.preventDefault();}
+    // cek parent child <script>if(document.querySelector('#idForm').contains(document.querySelector('#isiNamaBarang'))){alert('ya parent')}
+    //onload=function(){document.querySelector('div').setAttribute('style','opacity:1')};
+    //div > * { vertical-align: middle; }.
 </script>
 <script> 
-document.querySelector('#lNama').innerHTML=window.innerWidth+'mm window width '+ window.screen.width+'mm screen width <br>'+window.innerHeight+'mm window height '+window.screen.height+'mm screen height ';
-
-    //onload=function(){document.querySelector('div').setAttribute('style','opacity:1')};
+document.querySelector('#lHal3').innerHTML=window.innerWidth+'mm window width '+ window.screen.width+'mm screen width <br>'+window.innerHeight+'mm window height '+window.screen.height+'mm screen height ';
+//to do1: onload vAjaxNama load dari mongo
         document.querySelector('#pTgl').innerHTML=new Date().toLocaleString("id-id",{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'numeric'}).replace('pukul','pk.');
         // let [day, date, bulan, year, pukul, jam]=document.querySelector('#pTgl').innerHTML.split(" ");
         // let [hour,min]=jam.split(".");
@@ -204,16 +206,25 @@ document.querySelector('#lNama').innerHTML=window.innerWidth+'mm window width '+
             }};
         };
         fBacaAwal();
-        function fTanyaHapus(){document.querySelector('#alertHapus').classList.toggle('toggleTanyaHapus')}
+        function fToggleTanyaHapus(){document.querySelector('#alertHapus').classList.toggle('cToggleTanyaHapus')}
+        function fTanyaHapus(vIdHapus){
+            fToggleTanyaHapus();
+            //fCari();
+            //fTampil();
+            //addeventlistener
+            // karena tidak jadi tampilkan dari mongi, batal fCari() batal fTampil() tidak perlu fToggle()
+            if (event.clientY<335){
+            document.querySelector('#alertHapus').style.top='60mm';}
+            else{document.querySelector('#alertHapus').style.top='5mm';}
+            alert(event.clientY+'koord y '+document.querySelector('#alertHapus').style.top)
+        }
         function fHapus(vIdHapus){
-            fTanyaHapus();
-            fCari();
-            fTampil();
             const vTanya=document.querySelector('#ketikHapus').value;
             if ((vTanya.toLowerCase())=='hapus'){
-                // const vXhr=new XMLHttpRequest();
-                // vXhr.open('POST','/apiHapus');
-                // vXhr.send(vIdHapus);
+                const vXhr=new XMLHttpRequest();
+                vXhr.open('POST','/apiHapus');
+                vXhr.send(vIdHapus);
+                fToggleTanyaHapus();fBacaAwal();
                 alert('hapus ya');
             }else{alert('tulis hapus, lalu klik')}
         };
@@ -237,7 +248,7 @@ document.querySelector('#lNama').innerHTML=window.innerWidth+'mm window width '+
                 vSpanTgl.setAttribute('id','spanTgl');
                 // const vSpanHapus=document.createElement('span');
                 // vSpanHapus.innerHTML=' Hapus?';
-                vSpanTgl.setAttribute('onclick',`fHapus("${vMuat[i]._id}")`);
+                vSpanTgl.setAttribute('onclick',`fTanyaHapus("${vMuat[i]._id}");this.style.backgroundColor='#da4cec';`);
                 const vSpanNama=document.createElement('span');
                 vSpanNama.innerText=vMuat[i].nama;
                 vSpanNama.setAttribute('class','cSpan');
