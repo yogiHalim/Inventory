@@ -1,10 +1,91 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>    
     <link rel="shortcut icon" type="image/x-icon" href="https://storage.googleapis.com/icongambar/icon-green-y.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entry Jual dan Entry Beli</title>
+    <style>
+        *{
+            width:70.9mm;
+            font-size: 14px; color: #5d009b;
+            border-radius: 5px; box-sizing: border-box;
+        }
+        .teks{
+            padding-left:10px; height:45px;
+            /* background-image: url('searchicon.png'); */
+        }
+        .klik{
+            height:40px; width:175px;
+            font-size: 14px; font-weight:700; border: #02130b;
+        }
+        .klikJual,.klikBeli{
+        border-bottom: #34d044;
+        }
+    
+        .divHal{
+            background-color: #f2f2f2c5; position:absolute; width:93mm;height:160mm; padding:30px 0 0 0;  z-index: 1; /*margin-left:1mm;*/
+        }
+        /* samsung s23 ratio width:height=65:115 */
+        .cSpan{
+            width:50ch; display:inline-block; height:25px;padding-top: 5px;
+        }
+        .cPindahHal{
+            text-align: right; width:calc(100% - 2mm); display:block;
+        }
+        .cImgQr{
+            position:absolute; top:2mm; right:2mm; width:8mm; height:8mm;text-align: right;
+        }
+
+        #spanTgl{
+            position:relative;display:inline-block; height:35px;padding-top:15px;
+        }
+        #spanTgl::after{
+            position:relative;right:0;content:'';width:100%;
+        }
+        #spanTgl:active,#spanTgl:active+.cSpan,#spanTgl:active+.cSpan+.cSpan{
+            background-color: #da4cec;
+        }
+        #alertHapus{
+            position:absolute; margin-top: /*2*/20mm; margin-left: 0mm ; height:180px; padding-top: 15px; background-color: aliceblue; z-index: 2;; width:75mm;
+        }
+        #alertHapus span{
+            padding-left: 5mm; margin:0; height:18px; padding:2px 0px; position:relative;left:3mm;
+        }
+        .tombolKecil{
+            width:max-content;
+        }
+        button[type="submit"]{
+            margin:10px 0 0 2mm;
+            border:chartreuse;
+            width:calc(100% - 2mm); height:calc(1em + 15px)
+        }
+        button[type="submit"]:hover {
+        background-color: #640a85;
+        font-weight: bolder;
+        }
+        button[type="submit"]:active {
+        background-color: #45a049;
+        font-weight: bolder;
+        }
+        
+        input[type=text], select {
+        width: 100%; height:45px;
+        margin: 8px 0 0 1mm;
+        border: 1px solid #ccc;
+        border-bottom: #34d044;
+        border-radius: 4px;
+        /* font-weight: bolder; */
+        }
+        input[type=text]:focus {
+        background-color: rgba(32, 178, 112, 0.131); /*bisa color bisa border weight */
+        /* https://www.w3schools.com/css/css_form.asp */
+        }
+        /* div{opacity:0}; */
+        .toggleTanyaHapus{
+            visibility: hidden; background-color:rgb(189, 144, 84);
+        }
+    </style>
+  
 </head>
 <body>
     <section id="JualBeli" >
@@ -14,27 +95,27 @@
             <!-- <div id="divQR">QR</div> -->
             <div id="alertHapus" class="toggleTanyaHapus" > <span>Hapus yang ini: </span> <span onclick='fTanyaHapus()' style="position:relative; top:-2mm;left:43mm; font-size:22px">X</span><br>
                 <span>ketik hapus <br> untuk lanjut hapus yang dipilih</span> <br> 
-                <input type="text" id="ketikHapus" maxlength="5" />
+                <input id="ketikHapus" maxlength="5" type="text" />
                 <button type="button" class="tombolKecil" onclick="fHapus();fTanyaHapus()">Hapus</button><button onclick='fTanyaHapus()' type="button" class="tombolKecil">ndak jadi</button>
             </div>
-            <form method="POST" action="/" id='idForm' ><!--;fTanyaHapus() -->
-            <button type="button" id="klikJualBeli" onclick="fKlikJualBeli();fTanyaHapus()" class="klik teks" style="background-color: #acffb5a9;color:#5d009b; margin-bottom:20px;">Saat Ini Mencatat Jual</button>
+            <form method="POST" action="/" id='idForm' style="width:calc(100% - 2mm);"><!--;fTanyaHapus() -->
+            <button type="button" id="klikJualBeli" onclick="fKlikJualBeli();" class="klik teks" style="background-color: #acffb5a9;color:#5d009b; margin-bottom:20px;">Saat Ini Mencatat Jual</button>
                 <p id="pTgl">Tanggal</p>
                 <label id="lNama" for="isiNamaBarang" >Nama Barang Terjual</label> <!--onkeyup="fTanggal(document.querySelector('#isiNamaBarang').value)"-->
-                <input type="text" name="nama" id="isiNamaBarang" maxlength="9"  class="teks" placeholder="Nama Barang Terjual" required />
+                <input name="nama" id="isiNamaBarang" maxlength="9"  type="text" class="teks" onfocusout='fStartLoadingIcon();fQrBuat();' placeholder="Nama Barang Terjual" required />
                 <!-- <input type="text" id="isiNamaBarang" onkeyup="showHint(fHint)"/> -->
                 <!-- https://www.w3schools.com/xml/xml_http.asp -->
                 <label for="isiSatuan">satuan</label>
-                <input name="satuan" id="isiSatuan" maxlength="7" list="seringSatuan" required>
+                <input name="satuan" id="isiSatuan" maxlength="7" type="text" list="seringSatuan" required>
                     <datalist id="seringSatuan">
                         <option value="">belum diisi</option>
                         <option value="500gr"></option>
                         <option value="2kg"></option>
                     </datalist>
-                <label for="isiJumlah">Jumlah</label>
-                <input type="text" name="jumlah" id="isiJumlah" maxlength="9" class="teks" placeholder="Jumlah Dijual" onkeyup="fTotal()" required/>
+                <label id='lJumlah'for="isiJumlah">Jumlah</label>
+                <input name="jumlah" id="isiJumlah" maxlength="9" type="text" class="teks" placeholder="Jumlah Dijual" onkeyup="fTotal()" required/>
                 <label id="lHarga" for="isiHarga">Harga Jual</label>
-                <input name="harga" id="isiHarga" maxlength="9" list="seringHarga" onkeyup="fTotal()" required>
+                <input name="harga" id="isiHarga" maxlength="9" type="text" list="seringHarga" onkeyup="fTotal()" required>
                     <datalist id="seringHarga">
                         <option value="">belum diisi</option>
                         <option value="20000"></option>
@@ -42,267 +123,200 @@
             <button type="submit" id="klikCatat"> Catat. </button>
             <button type="submit" id="klikCari"> Cari..</button>
             <p id="pTotal">Total</p>
-            <a href="#divMuat" >Lihat Transaksi </a>
             </form>
+            <!-- <a class="cPindahHal" style="width:4mm; height:10mm; background-color: #02130b2a; border-radius: 0px;">ksijy<br>ksijy<br></a> -->
+            <a href="#hal2" class="cPindahHal">Lihat Transaksi <br><br></a>
+            <!-- fQrScan() -->
+            <a href="#hal3" class="cPindahHal">Lihat Bagian Scan QRcode<br></a>
+            <label id="lImgQr">Ketik di Nama Barang lalu tunggu QRCode dimuat <br></label>
+            <img id="imgQr" alt="QR Code" src="QRcodeIntiCollection.png"; class="cImgQr">
         </div>
     </section>
-    <section style="margin-top:170mm; position:absolute; height:210mm" class="divHal">
-        <label onclick="location.href='#JualBeli'">Kembali ke Atas<br></label>
+    <section id='hal2' style="margin-top:240mm; position:absolute;" class="divHal">
+        <label onclick="location.href='#JualBeli'" id="lHal2" class="cPindahHal">Kembali ke Atas<br></label>
         <button style="width:36mm">Sebelumnya</button>
         <button style="width:36mm">Berikutnya</button>
         <div id="divMuat" style="padding-bottom: 50mm; padding-left: 0mm;" class="divHal">
         </div>
     </section>
+    <section id='hal3'style="margin-top:480mm; position:absolute;" class="divHal">
+        <label onclick="location.href='#JualBeli'" id="lHal3" class="cPindahHal">Kembali ke Atas<br>instascan qrcode disini</label>
+        <!-- onclick="fInstascan();" -->
+        <label>Mulai Scan</label>
+        <video id="vidTampilQr"></video>
+        <div style="width: 480px; height: 480px;" id="divQrScan">id:divQrScan</div>
+    </section>
     
 </body>
+<!-- /* ubah warna dengan variabel onklik muat warna dari filetxt*/
+/* document.documentElement.style.setProperty('--primary-color', '#00FFFF'); */ -->
+<script>if(document.querySelector('#idForm').contains(document.querySelector('#isiNamaBarang'))){alert('ya parent')}</script>
 <script>
-document.querySelector('#klikJualBeli').innerText=window.innerWidth,' width ', window.screen.width,' screen width ',window.innerHeight,' height ',window.screen.height,' screen height ';
-;
-
-    // check compatibility
-if (!("BarcodeDetector" in globalThis)) {
-  console.log("Barcode Detector is not supported by this browser.");
-} else {
-  console.log("Barcode Detector supported!");
-
-  // create new detector
-  const barcodeDetector = new BarcodeDetector({
-    formats: ["code_39", "codabar", "ean_13"],
-  });
-}
-
-// check supported types
-BarcodeDetector.getSupportedFormats().then((supportedFormats) => {
-  supportedFormats.forEach((format) => console.log(format));
-});
-
-barcodeDetector
-  .detect(imageEl)
-  .then((barcodes) => {
-    barcodes.forEach((barcode) => console.log(barcode.rawValue));
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-//https://developer.mozilla.org/en-US/docs/Web/API/Barcode_Detection_API
-
+    //script css dan cosmetics
+    document.addEventListener('touchmove',fTidakScroll,{passive:false});
+    function fTidakScroll(event){event.preventDefault();}
 </script>
-
 <script> 
-//onload=function(){document.querySelector('div').setAttribute('style','opacity:1')};
-    document.querySelector('#pTgl').innerHTML=new Date().toLocaleString("id-id",{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'numeric'}).replace('pukul','pk.');
-    let [day, date, bulan, year, pukul, jam]=document.querySelector('#pTgl').innerHTML.split(" ");
-    let [hour,min]=jam.split(".");
-    month=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"].indexOf(bulan)+1;
-    //vTanggal=year+"0"+month+date+hour+min;
-    //vTanggal=new Date().toLocaleString('id-ID',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).replace(/[^\d]/g, '');
-    vTanggal=Number(new Date().toISOString().replace(/[^\d]/g,'').slice(0,12))+700; //to isostring + 7 jam replace ./;
-    function fTotal(){document.querySelector('#pTotal').innerHTML='Total = Rp.'+new Intl.NumberFormat('id-id').format(document.querySelector('#isiJumlah').value*document.querySelector('#isiHarga').value);console.log('haiiii')};
-    function fKlikJualBeli(){
-        let vJualBeli='Terjual';
-        const isiKlikJualBeli=document.querySelector('#klikJualBeli')
-        if (isiKlikJualBeli.innerText=="Saat ini mencatat Beli") {
-        isiKlikJualBeli.innerText="Saat ini mencatat Jual"; vJualBeli='Terjual';}
-        else {isiKlikJualBeli.innerText="Saat ini mencatat Beli"; vJualBeli='Dibeli'};
-        document.querySelector('#lNama').innerHTML='Nama Barang '+vJualBeli;
-        document.querySelector('#lHarga').innerHTML='Harga '+vJualBeli;
-        document.querySelector('#isiNamaBarang').placeholder='Nama Barang '+vJualBeli;
-        document.querySelector('#isiJumlah').placeholder='Jumlah '+vJualBeli;
-        document.querySelector('#isiHarga').placeholder='Harga '+vJualBeli;
-    };
-    
-    const fBacaAwal=async (e)=>{
-        //e.preventDefault();
-        const vXhr=new XMLHttpRequest();
-        await vXhr.open('POST','/apiBacaAwal');
-        vXhr.send();
-        vXhr.onload=function(){if(vXhr.status==200){
-            const vMuat1=JSON.parse(vXhr.responseText);
-            const vDivMuat=document.querySelector('#divMuat');
-            fTampil(vMuat1,vDivMuat); 
-        }};
-    };
-    fBacaAwal();
-    function fTanyaHapus(){document.querySelector('#alertHapus').classList.toggle('toggleTanyaHapus')}
-    function fHapus(vIdHapus){
-        fTanyaHapus();
-        fCari();
-        fTampil();
-        const vTanya=document.querySelector('#ketikHapus').value;
-        if ((vTanya.toLowerCase())=='hapus'){
-            // const vXhr=new XMLHttpRequest();
-            // vXhr.open('POST','/apiHapus');
-            // vXhr.send(vIdHapus);
-            alert('hapus ya');
-        }else{alert('tulis hapus, lalu klik')}
-    };
-    function fTampil(vMuat,vMuatDi){
-        const vDivMuat=document.querySelector('#divMuat');
-        while(vDivMuat.firstChild){
-                    vDivMuat.firstChild.remove()
-                };
-        for (let i=0; i<vMuat.length;i++){
-            const vSpanTgl = document.createElement('span');
-            vSpanTgl.innerHTML=vMuat[i].tanggal+' Hapus?'; //<span style="position:absolute;right:0;content'';width:100%"></span>,
-            vSpanTgl.setAttribute('id','spanTgl');
-            // const vSpanHapus=document.createElement('span');
-            // vSpanHapus.innerHTML=' Hapus?';
-            vSpanTgl.setAttribute('onclick',`fHapus("${vMuat[i]._id}")`);
-            const vSpanNama=document.createElement('span');
-            vSpanNama.innerText=vMuat[i].nama;
-            vSpanNama.setAttribute('class','cSpan');
-            const vSpanJumlah=document.createElement('span');
-            vSpanJumlah.innerHTML=vMuat[i].jumlah+' px.'+'Total : Rp.'+new Intl.NumberFormat('id-id').format(vMuat[i].jumlah*vMuat[i].harga);
-            vSpanJumlah.setAttribute('class','cSpan');
-            vMuatDi.appendChild(vSpanTgl);
-            //vDivMuat.appendChild(vSpanHapus);
-            vMuatDi.appendChild(vSpanNama);
-            vMuatDi.appendChild(vSpanJumlah);
-        };
-    };
+document.querySelector('#lNama').innerHTML=window.innerWidth+'mm window width '+ window.screen.width+'mm screen width <br>'+window.innerHeight+'mm window height '+window.screen.height+'mm screen height ';
 
-    const fCari=async (e)=>{;
-        e.preventDefault();
-        location.href='#divMuat';
-        const vXhr = new XMLHttpRequest();
-        vXhr.open("POST","/apiTampil");
-        vXhr.setRequestHeader('Content-type','text/plain');
-        let vCari=JSON.stringify({nama:document.querySelector('#isiNamaBarang').value});
-        vXhr.send(vCari);
-        vXhr.onload=function(){if(vXhr.status==200){
-            const vMuat1=JSON.parse(vXhr.responseText);
-            const vDivMuat=document.querySelector('#divMuat');
-            fTampil(vMuat1,vDivMuat);
-        }};
-    };
-
-    const fCatat=async (e)=>{
-        e.preventDefault();
-        const vXhr=new XMLHttpRequest();
-        vXhr.open('POST','/apiCatat');
-        const vForm=document.forms[0];
-        var vCatat=[];
-        for (let i=1;i<=4;i++){
-        console.log(i,'for i');
-            vKey=vForm[i].name;
-            vValue=vForm[i].value;
-            vGabung={[vKey]:vValue};
-            vCatat={...vCatat,...vGabung};
-        };
-        vCatatTgl={tanggal:vTanggal,...vCatat};
-        vCatatString=JSON.stringify(vCatatTgl);
-        console.log(vCatatString);
-        vXhr.send(vCatatString); 
-    };
-
-    const vKlikForm=document.querySelector('#idForm');
-    vKlikForm.addEventListener('submit',function(event){
-        const vKlikTombol = event.submitter.getAttribute('id');
-        switch(vKlikTombol){
-            case "klikCatat":
-                fCatat(event);
-                break;
-                alert(vKlikForm);
-            case "klikCari":
-                fCari(event);
-                break;
-                alert(vKlikTombol)
-            case "klikLain":
-                break;
-                alert('case tidak jalan code sampai ketemu case nya, misalnya klikCari, lalu jalankan semua code sampai paling bawah kecuali di break;')
-            default:
-                alert('jalan setelah semua case, kecuali yg di break;')
-                break;
+    //onload=function(){document.querySelector('div').setAttribute('style','opacity:1')};
+        document.querySelector('#pTgl').innerHTML=new Date().toLocaleString("id-id",{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'numeric'}).replace('pukul','pk.');
+        // let [day, date, bulan, year, pukul, jam]=document.querySelector('#pTgl').innerHTML.split(" ");
+        // let [hour,min]=jam.split(".");
+        // month=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"].indexOf(bulan)+1;
+        //vTanggal=year+"0"+month+date+hour+min;
+        //vTanggal=new Date().toLocaleString('id-ID',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).replace(/[^\d]/g, '');
+        vTanggal=Number(new Date().toISOString().replace(/[^\d]/g,'').slice(0,12))+700; //to isostring + 7 jam replace ./;
+        function fTotal(){document.querySelector('#pTotal').innerHTML='Total = Rp.'+new Intl.NumberFormat('id-id').format(document.querySelector('#isiJumlah').value*document.querySelector('#isiHarga').value);console.log('haiiii')};
+        function fQrBuat(){const vTeksQr='https://api.qrserver.com/v1/create-qr-code/?data='; const vTeksQr2=document.querySelector('#isiNamaBarang').value; document.querySelector('#imgQr').setAttribute('src',vTeksQr+vTeksQr2);}
+        let vIconIndex=0,vIconLoop=0;
+        function fStartLoadingIcon(){const vIntLoading =setInterval(function(){fIconLoading()},500);document.querySelector('#imgQr').onload=function(){clearInterval(vIntLoading);document.querySelector('#lImgQr').innerText='QR Code di kanan atas.';document.querySelector('#imgQr').setAttribute('style','width:40%; height:unset; aspect-ratio:1/1;');}};
+        function fIconLoading(){
+            const vTargetLabel=document.querySelector('#lImgQr');
+            const vIconLoading=[':','~',' :','_'];
+            vTargetLabel.innerHTML=`Loading...<b style="font-size:20px">${vIconLoading[vIconIndex]}</b>`;
+            vIconIndex++
+            if (vIconIndex==4){vIconIndex=0,vIconLoop++}
         }
-    })
-
-    // const vKlikCatat=document.querySelector('#klikCatat');
-    // const vKlikCari=document.querySelector('#klikCari');
-    // vKlikCatat.addEventListener('click',(fCatat));
-    // vKlikCari.addEventListener('click',(fCari));
-
-    //jangan string, post json!!!
-    //on click if max char stop, else run
-
-    //ambil indeks pertama json document
-        // vIsiNamaBarang.value=JSON.parse(vXhr.responseText)[0].nama;
-        // vIsiJumlah.placeholder=JSON.parse(vXhr.responseText)[0].umur;
-</script>
-<style>
-    /* ubah warna dengan variabel onklik muat warna dari filetxt*/
-    /* document.documentElement.style.setProperty('--primary-color', '#00FFFF'); */
-    *{
-        height:40px; width:279px;
-        font-size: 14px; color: #5d009b;
-        border-radius: 5px; box-sizing: border-box;
-    }
-    .teks{
-        padding-left:10px;
-        /* background-image: url('searchicon.png'); */
-    }
-    .klik{
-        height:40px; width:175px;
-        font-size: 14px; font-weight:700; border: #02130b;
-    }
-    .klikJual{
-    border-bottom: #34d044;
-    }
-    .klikBeli{
-    border-bottom: #34d044;
-    }
-    .divHal{
-        background-color: #f2f2f2c5; width:75mm;height:160mm; padding-top:80px; padding-left:0 ;  z-index: 1; /*margin-left:1mm;*/
-    }
-    .cSpan{
-        width:50ch; display:inline-block; height:25px;padding-top: 5px;
-    }
-    #spanTgl{
-        position:relative;display:inline-block; height:35px;padding-top:15px;
-    }
-    #spanTgl::after{
-        position:relative;right:0;content:'';width:100%;
-    }
-    #spanTgl:active,#spanTgl:active+.cSpan,#spanTgl:active+.cSpan+.cSpan{
-        background-color: #da4cec;
-    }
-    #alertHapus{
-        position:absolute; margin-top: /*2*/20mm; margin-left: 0mm ; height:180px; padding-top: 15px; background-color: aliceblue; z-index: 2;; width:75mm;
-    }
-    #alertHapus span{
-        padding-left: 5mm; margin:0; height:18px; padding:2px 0px; position:relative;left:3mm;
-    }
-    .tombolKecil{
-        width:max-content;
-    }
-    button[type="submit"]{
-        margin-top:10px;
-        border:chartreuse;
-        width:74mm;
-    }
-    button[type="submit"]:hover {
-    background-color: #640a85;
-    font-weight: bolder;
-    }
-    button[type="submit"]:active {
-    background-color: #45a049;
-    font-weight: bolder;
-    }
+        
+        function fKlikJualBeli(){
+            let vJualBeli='Terjual';
+            const isiKlikJualBeli=document.querySelector('#klikJualBeli')
+            if (isiKlikJualBeli.innerText=="Saat ini mencatat Beli") {
+            isiKlikJualBeli.innerText="Saat ini mencatat Jual"; vJualBeli='Terjual';}
+            else {isiKlikJualBeli.innerText="Saat ini mencatat Beli"; vJualBeli='Dibeli'};
+            document.querySelector('#lNama').innerHTML='Nama Barang '+vJualBeli;
+            document.querySelector('#lHarga').innerHTML='Harga '+vJualBeli;
+            document.querySelector('#isiNamaBarang').placeholder='Nama Barang '+vJualBeli;
+            document.querySelector('#isiJumlah').placeholder='Jumlah '+vJualBeli;
+            document.querySelector('#isiHarga').placeholder='Harga '+vJualBeli;
+        };
+        
+        const fBacaAwal=async (e)=>{
+            //e.preventDefault();
+            const vXhr=new XMLHttpRequest();
+            await vXhr.open('POST','/apiBacaAwal');
+            vXhr.send();
+            vXhr.onload=function(){if(vXhr.status==200){
+                const vMuat1=JSON.parse(vXhr.responseText);
+                const vDivMuat=document.querySelector('#divMuat');
+                fTampil(vMuat1,vDivMuat); 
+            }};
+        };
+        fBacaAwal();
+        function fTanyaHapus(){document.querySelector('#alertHapus').classList.toggle('toggleTanyaHapus')}
+        function fHapus(vIdHapus){
+            fTanyaHapus();
+            fCari();
+            fTampil();
+            const vTanya=document.querySelector('#ketikHapus').value;
+            if ((vTanya.toLowerCase())=='hapus'){
+                // const vXhr=new XMLHttpRequest();
+                // vXhr.open('POST','/apiHapus');
+                // vXhr.send(vIdHapus);
+                alert('hapus ya');
+            }else{alert('tulis hapus, lalu klik')}
+        };
+        function fTampil(vMuat,vMuatDi){
+            const vDivMuat=document.querySelector('#divMuat');
+            while(vDivMuat.firstChild){
+                        vDivMuat.firstChild.remove()
+                    };
+            for (let i=0; i<vMuat.length;i++){
+                const vSpanTgl = document.createElement('span');
+                vMuatTanggal1=JSON.stringify(vMuat[i].tanggal);
+                if (typeof vMuatTanggal1=='undefined') {vMuatTanggal1='';}
+                vSliceTahun=vMuatTanggal1.slice(0,4);
+                vSliceBulan=vMuatTanggal1.slice(4,6);
+                vSliceTanggal=vMuatTanggal1.slice(6,8);
+                vSliceJam=vMuatTanggal1.slice(8,10);
+                vSliceMenit=vMuatTanggal1.slice(10,12);
+                vMuatTanggal2=`${vSliceTahun}-${vSliceBulan}-${vSliceTanggal} ${vSliceJam}:${vSliceMenit}`; 
+                vSpanTgl.innerHTML=new Date(vMuatTanggal2).toLocaleString("id-id",{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'numeric'}).replace('pukul','pk.')+' Hapus?';
+                //vSpanTgl.innerHTML=`fTanggalTampil("${vMuatTanggal}")) Hapus?`; //<span style="position:absolute;right:0;content'';width:100%"></span>,
+                vSpanTgl.setAttribute('id','spanTgl');
+                // const vSpanHapus=document.createElement('span');
+                // vSpanHapus.innerHTML=' Hapus?';
+                vSpanTgl.setAttribute('onclick',`fHapus("${vMuat[i]._id}")`);
+                const vSpanNama=document.createElement('span');
+                vSpanNama.innerText=vMuat[i].nama;
+                vSpanNama.setAttribute('class','cSpan');
+                const vSpanJumlah=document.createElement('span');
+                vSpanJumlah.innerHTML=vMuat[i].jumlah+' px.'+'Total : Rp.'+new Intl.NumberFormat('id-id').format(vMuat[i].jumlah*vMuat[i].harga);
+                vSpanJumlah.setAttribute('class','cSpan');
+                vMuatDi.appendChild(vSpanTgl);
+                //vDivMuat.appendChild(vSpanHapus);
+                vMuatDi.appendChild(vSpanNama);
+                vMuatDi.appendChild(vSpanJumlah);
+            };
+        };
     
-    input[type=text], select {
-    width:74mm;
-    margin: 8px 0;
-    border: 1px solid #ccc;
-    border-bottom: #34d044;
-    border-radius: 4px;
-    /* font-weight: bolder; */
-    }
-    input[type=text]:focus {
-    background-color: rgba(32, 178, 112, 0.131); /*bisa color bisa border weight */
-    /* https://www.w3schools.com/css/css_form.asp */
-    }
-    /* div{opacity:0}; */
-    .toggleTanyaHapus{
-        visibility: hidden; background-color:rgb(189, 144, 84);
-    }
-</style>
+        const fCari=async (e)=>{;
+            e.preventDefault();
+            location.href='#divMuat';
+            const vXhr = new XMLHttpRequest();
+            vXhr.open("POST","/apiTampil");
+            vXhr.setRequestHeader('Content-type','text/plain');
+            let vCari=JSON.stringify({nama:document.querySelector('#isiNamaBarang').value});
+            vXhr.send(vCari);
+            vXhr.onload=function(){if(vXhr.status==200){
+                const vMuat1=JSON.parse(vXhr.responseText);
+                const vDivMuat=document.querySelector('#divMuat');
+                fTampil(vMuat1,vDivMuat);
+            }};
+        };
+    
+        const fCatat=async (e)=>{
+            e.preventDefault();
+            const vXhr=new XMLHttpRequest();
+            vXhr.open('POST','/apiCatat');
+            const vForm=document.forms[0];
+            var vCatat=[];
+            for (let i=1;i<=4;i++){
+            console.log(i,'for i');
+                vKey=vForm[i].name;
+                vValue=vForm[i].value;
+                vGabung={[vKey]:vValue};
+                vCatat={...vCatat,...vGabung};
+            };
+            vCatatTgl={tanggal:vTanggal,...vCatat};
+            vCatatString=JSON.stringify(vCatatTgl);
+            console.log(vCatatString);
+            vXhr.send(vCatatString); 
+        };
+    
+        const vKlikForm=document.querySelector('#idForm');
+        vKlikForm.addEventListener('submit',function(event){
+            const vKlikTombol = event.submitter.getAttribute('id');
+            switch(vKlikTombol){
+                case "klikCatat":
+                    fCatat(event);
+                    break;
+                    alert(vKlikForm);
+                case "klikCari":
+                    fCari(event);
+                    break;
+                    alert(vKlikTombol)
+                case "klikLain":
+                    break;
+                    alert('case tidak jalan code sampai ketemu case nya, misalnya klikCari, lalu jalankan semua code sampai paling bawah kecuali di break;')
+                default:
+                    alert('jalan setelah semua case, kecuali yg di break;')
+                    break;
+            }
+        })
+    
+        // const vKlikCatat=document.querySelector('#klikCatat');
+        // const vKlikCari=document.querySelector('#klikCari');
+        // vKlikCatat.addEventListener('click',(fCatat));
+        // vKlikCari.addEventListener('click',(fCari));
+    
+        //jangan string, post json!!!
+        //on click if max char stop, else run
+    
+        //ambil indeks pertama json document
+            // vIsiNamaBarang.value=JSON.parse(vXhr.responseText)[0].nama;
+            // vIsiJumlah.placeholder=JSON.parse(vXhr.responseText)[0].umur;
+    </script>
+    
 </html>

@@ -1,0 +1,355 @@
+
+
+min(jam diposting) --> cek kalau posting dua kali sama dan jam berapa berapa menit yang lalu
+cek2 = semua input sama persis terakhir diposting kapan --> if(vExists) {return vExists} --> apa ini. menit 21:40
+
+display 10 transaksi terakhir aja --> limit 10?
+$lt:date -->less than $ne --> not equal
+
+tampilkan masing2 satu --> db.collection.distinct("name.namenested":value)
+
+cek sisa stok= 1. dihitung saat post. 2. changeStream cek resume changeStream (kyny ga us pakai changeStream)
+^kyny pakai atlas trigger. tapi jadi engga clean architecture dependent sama atlas. gpp lah.
+^^wah ternyata trigger on crud aja. Jadi kyny hitung di backend.
+
+cluster = JualBeli
+database = IntiCollection
+table = collection = JualBeli -->IntiCollection.JualBeli
+
+
+mongo
+https://www.youtube.com/watch?v=fbYExfeFsI0&t=138s 
+menit 28:00 ${result.matchedCount} ${result.modifiedCount} 
+{upsert:true} result.upsertCount ${result.upsertedId}
+{$exists:false} menit 34:00
+result.deletedCount
+sort menit 22
+syntax template https://github.com/mongodb-developer/nodejs-quickstart
+net ninja
+
+trik:
+1.
+upsert tahap pertama find param dulu jadi bisa .matchedCount untuk cek berapa yang matched lalu .modifiedCount untuk cek berapa yang di upsert
+2.
+variabel diisi function, bisa if kalau ada isi (berarti function dijalankan, dan ngisi variabel) else tidak ada isi (berarti function abort, variabel ga ada)
+https://www.youtube.com/watch?v=bdS03tgD2QQ menit 17:30
+3.
+list of trik https://www.youtube.com/watch?v=CnailTcJV_U
+comment soft delete, comment moderation, comment spam filter
+clean architecture #1: rules di export. file .js nya rules tidak import apapun menit 12.
+^tetep perlu fungsi dari luar, tapi disebutnya inject dependency? = tidak import. gimana itu ya
+^^kyny function yang perlu (dependent) import di run di tempat lain, hal2 yang ditandai export disini akan diimport file lain yang juga import dependency. --> nice work.
+^^yang diubah di file rule juga bukan variabel external atau id element html.
+^layer entity, use-case semua di satu folder src, menit 11:55 dibanding menit 26:30 
+^layer use-case semua .js diikat dalam index.js -->artinya export semua dari sini, setelah import use-case semua kesini.
+^later 3 interface adapter: bikin variabel fungsi2 biasa (find insert dll) yang dipakai layer 2--> supaya variabel itu bisa diisi 1 bahasa program (mongo) dan nanti diganti bahasa program lain (sql) tinggal ganti disini tanpa ada efek di layer 2 yang pakai find insert dll itu
+^^selain crud find insert dll, layer 3 juga bikin variabel yg diisi httpRequest dll menit 29
+^^ada index.js juga (file beda, anddap aja index-layer3.js) yang sama export semua dari sini setelah import semua layer 3 (adapter controller).
+lain2 cek:
+memory leak = eventEmitter node js, remove emitter ; timeout, taro di variabel agar bisa clearTimeout ; return di akhir jangan diisi diikuti reference ke variabel di luar file node js misalnya return req.vHeaders
+https://www.youtube.com/watch?v=YBnN2JpS4hI
+4. akses key:value attribute di form dan isi form (isi form disebut elemen)
+ <form method="POST" action="/" id='idForm'>
+ </form>
+  console.log(document.forms.idForm.elements);
+  console.log(document.forms.idForm.elements.namedItem('isiNamaBarang').value);
+  console.log(document.forms[0].elements.namedItem('isiNamaBarang').attributes[4].value);
+  console.log(document.forms[0].elements.namedItem('isiNamaBarang').attributes.item(4));
+  console.log(document.forms[0].elements.namedItem('isiNamaBarang').attributes);
+  console.log(document.forms[0].elements.namedItem('isiNamaBarang').name);
+5. coba oper bentuk string data front end ke backend, lalu bentuk json ke mongodb
+  console.log(vForm.length,'length');
+  console.log(vForm.getElementsByTagName('input').length,'tagname');
+  console.log(document.forms.idForm.elements.namedItem('isiNamaBarang').value);
+  console.log(document.forms[0].elements.namedItem('isiNamaBarang').name);
+  vKey="'"+vKey+"'";
+  vValue='"'+vValue+'"';
+  vCatat.push(vKey,vValue);
+  var formData = new FormData(document.forms[0])
+  formData.forEach(function(value) {
+    vCatat.push(value);
+  });
+  vCatatJoin='"{'+vCatat+'}"';
+  vCatat=vCatatJoin.slice(0,-3)+vCatatJoin.slice(-2);
+  console.log(vCatat,'habis join sebelum json.parse');
+  vCatat=JSON.parse(vCatat.slice(1,-1));
+  vCatatString=JSON.stringify(vCatat);
+  vCatatJson = JSON.parse(JSON.stringify(vCatat));
+  console.log(vCatatJson,'101');
+  console.log(vForm,'00');
+  console.log(vForm[0],'01');
+  console.log(vForm[1],'1');
+  console.log(vForm[1].value,'11');
+  console.log(vForm[1].name,'11');
+  console.log(vGabung,'vGabung');
+  console.log(vCatat,'2');
+  console.log(JSON.stringify(vCatat),'jsonparse');
+  console.log(vCatatString,'3');
+  console.log(formData,'formData');
+  console.log(vForm.getElementsByTagName('input')[1].name);
+  console.log(vForm.getElementsByTagName('input')[1].value);
+6. insertMany --consider upsert
+async function fInputJualBeli(vClient,vData){
+    const vDataDisimpan = await vClient.db("IntiCollection").collection("JualBeli").insertMany(vData);
+    console.log(vDataDisimpan.insertedId);
+    console.log("count yang disimpan",vDataDisimpan.insertedCount, vDataDisimpan.insertedIds);
+  }
+7. s23 screen size
+Height: 146.3 mm
+Width: 70.9 mm
+Depth: 7.6 mm
+laptop
+121mm window width 1384mm screen width
+569mm window height 779mm screen height
+tv changhong
+304mm window width 1730mm screen width
+725mm window height 973mm screen height
+
+
+kode cara alternatif.
+coba qrcode1
+<script src="https://unpkg.com/html5-qrcode">
+    function onScanSuccess(v1,v2){alert(v1,v2)};
+    window.onload=new Html5QrcodeScanner("divQR",{fps:10,qrbox:250}).render(onScanSuccess)
+    function domReady(fn){
+        if (document.readyState==='complete'||document.readyState==='interactive'){setTimeout(fn,1)}else{document.addEventListener('DOMContentLoaded,fn')}}
+    domReady(function(){
+        var myqr =document.getElementById('divQR')
+        var lastResult,countResults=0;
+        function onScanSuccess(decodeText,decodeResult){
+            if(decodeText!==lastResult){++countResults;lastResult=decodeText;alert('decodeText,decodeResult');myqr.innerHTML=countResults+decodeText;}
+        }
+        var htmlscanner = new Html5QrcodeScanner("divQR",{fps:10,qrbox:250})
+        htmlscanner.render(onScanSuccess)
+    })
+</script>
+qr scanner React library
+import React from "react";
+import Scanner from "react-webcam-qr-scanner";
+
+const MyAwesomeComponent = () => {
+    const handleDecode = (result) => {
+        console.log(result); // Handle the decoded result
+    };
+
+    const handleScannerLoad = (mode) => {
+        console.log(mode); // Handle scanner load event
+    };
+
+    return (
+        <Scanner
+            className="some-classname"
+            onDecode={handleDecode}
+            onScannerLoad={handleScannerLoad}
+            constraints={{ audio: false, video: { facingMode: "environment" } }}
+            captureSize={{ width: 1280, height: 720 }}
+        />
+    );
+};
+
+
+qr api dari gambar QRCode yang dimuat di <img>
+    // check compatibility
+if (!("BarcodeDetector" in globalThis)) {
+  alert("Barcode Detector is not supported by this browser.");
+} else {
+    alert("Barcode Detector supported!");
+
+  // create new detector
+  const barcodeDetector = new BarcodeDetector({
+    formats: ["code_39", "codabar", "ean_13"],
+  });
+}
+
+// check supported types
+BarcodeDetector.getSupportedFormats().then((supportedFormats) => {
+  supportedFormats.forEach((format) => console.log(format));
+});
+
+
+// detect barcodes
+const imageEl = document.querySelector("#imgQr"); //tambahan yogi, kira2 dari chatGPT
+barcodeDetector
+  .detect(imageEl)
+  .then((barcodes) => {
+    barcodes.forEach((barcode) => {console.log(barcode.rawValue); document.querySelector('#isiNamaBarang').value=barcode.rawValue;}
+  )})
+  .catch((err) => {
+    console.log(err);
+  });
+// https://developer.mozilla.org/en-US/docs/Web/API/Barcode_Detection_API
+
+shortest code untuk test send
+  res.writeHead(200,{'Content-Type':'text/plain'}); res.write('Hello from App Engine!');res.end();return;     //hapus ini
+
+insert ke text
+
+// var MongoClient = require('mongodb').MongoClient;
+// var url = "mongodb://localhost:27017/";
+
+// MongoClient.connect(url, function(err, db) {
+//   if (err) throw err;
+//   var dbo = db.db("mydb");
+//   var myobj = { name: "Company Inc", address: "Highway 37" };
+//   dbo.collection("customers").insertOne(myobj, function(err, res) {
+//     if (err) throw err;
+//     console.log("1 document inserted");
+//     db.close();
+//   });
+// });
+findOne
+  const vTampil= await vClient.db("IntiCollection").collection("JualBeli").findOne({nama:vCari});
+  if (vTampil){console.log("ada",vTampil.nama,vTampil.umur,vTampil.matchedCount,JSON.stringify(vTampil));}else{console.log("tidak ada")};
+
+console.log(1+1);
+console.log(__dirname+'\\bulanan.txt); --> cancel \ dengan dua gini \\
+console.log(__filename);
+const zPath=wPath+%5C+vPath;
+
+const fs = require('fs');
+const { json } = require('stream/consumers');
+const aa =  JSON.stringify([
+  {
+      "nama":"yogi",
+      "umur":41,
+      "pets":[
+          { "animal":"dog", "name":"Fido" },
+          { "animal":"cat", "name":"Felix" },
+          { "animal":"hamster", "name":"Lightning" }
+      ]
+  },//'\n',
+  {
+    "nama":"uk",
+    "umur":41
+}])
+
+// const ab = JSON.stringify([
+//   {
+//       "nama":"uk",
+//       "umur":41
+//   }
+//   ])
+  const a = aa//+'\n'+ab;
+  console.log(a);
+fs.writeFile('bulanan.txt',a,()=>{
+  console.log('tulis');
+});
+
+window onload  
+    window.onload=()=>{
+        console.log('script onload');
+        const vXHR = new XMLHttpRequest();
+        const vURL = "bulanan.txt";
+        //const uURL2 = "bulanan.json";
+        vXHR.open("GET",vURL,true);
+        let vData = 0;
+        vXHR.onreadystatechange=function(){
+            if (this.readyState === 4 && this.status ===200) {
+            console.log(this.responseText);
+            console.log(bulanan);
+            //const wData = fetch("bulanan.txt");
+            //console.log(wData);
+            vData = JSON.parse(this);
+            vIsiNamaBarang.placeholder=vData[0].nama;
+            vIsiJumlah.placeholder=vData[1].nama;
+            console.log(vData[1].nama);
+            }
+        }
+        vXHR.send();
+    }
+
+ambil value dari node jspada indeks pertama document json. (-->array?)
+const vXhr = new XMLHttpRequest();
+        vXhr.open("POST","/apiTampil");
+        vXhr.setRequestHeader('Content-type','text/plain');
+        let vCari=JSON.stringify({nama:vIsiNamaBarang.value});
+        vXhr.send(vCari);
+        vXhr.onload=function(){if(vXhr.status==200){
+            const vMuat1=JSON.parse(vXhr.responseText);
+            vIsiNamaBarang.value=JSON.parse(vXhr.responseText)[0].nama;
+            vIsiJumlah.placeholder=JSON.parse(vXhr.responseText)[0].umur;
+            fTampil(vMuat1);
+        }};
+
+
+routing
+const http = require('http');
+const vServer=http.createServer((req,res)=>{
+  console.log(req.url, req.method);
+  res.setHeader('content-type','text/html');
+  //res.write('ahoy');
+  // const baca=fs.readFile('JualBeli.html');
+  // console.log(baca);
+  let vPath ="";
+  switch (req.url) {
+    case '/':
+      vPath+='jualbeli.html';
+      console.log(vPath+'0');
+      break;
+    case '/about':
+      vPath+='about.html';
+      console.log(vPath+'2');
+      break;
+    default :vPath+='coba.html';
+    console.log(vPath+'3');
+    //fs.write req.url untuk catat orang nyasar kemana aja
+    break;
+  }
+  fs.readFile(vPath,(err,data)=>{
+    console.log('1'+vPath);
+    if (err) {
+      console.log('err');
+      res.end();
+    }else {
+      console.groupCollapsed('tulis html');
+      //res.write(data);
+      res.end(data);
+    }
+  });
+});
+vServer.listen(3000,'localhost',()=>{
+  console.log('listening port 3000 ya');
+});
+
+azure
+  az account clear //clear loggen in subscription cache
+  az account set --name <subscription_name> //then set the required subscription freshly
+
+Provider Registration: Verify that the Microsoft.Web provider is registered. 
+  az provider register --namespace Microsoft.Web
+  az provider list --query "[namespace=='Microsoft.Web'].resourceTypes[].resourceType"
+
+PS /home/yogi> set-AzContext -Subscription {yogisubscription}
+PS /home/yogi> update-AzConfig -DefaultSubscriptionForLogin "yogisubscription"
+
+az provider register --namespace Microsoft.Web 
+az provider list --query ``"[namespace=='Microsoft.Web'].resourceTypes[].resourceType"``
+
+googlecloud
+cloud code= IDE pakai vscode bisa
+cloud run= berbayar routing assist otomatis
+{
+  "main": "index.js",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0"
+  }
+}
+ganti default folder google cloud cli
+C:\Users\yogiHalim\AppData\Local\Google\Cloud SDK\cloud_env.bat
+
+docker container image
+https://docs.docker.com/guides/docker-concepts/the-basics/what-is-a-container/
+
+node js express
+const express = require('express');
+const vEx=express();
+vEx.use(express.json());
+//vEx.use(express.static('public'));
+vEx.listen(3300,()=>{console.log('listen port 3300 juga')});
+vEx.get('/apiBacaAwal',(req,res)=>{
+  console.log('klik catat berhasil')
+  res.json({nama:"yogi"});
+  res.sendFile('coba.html');
+  //fs.readfile trus res.send(vResult)  -----> next ini yang dikerjakan yogi
+  res.end();
+})

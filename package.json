@@ -1,0 +1,28 @@
+{
+  "name": "inventory",
+  "version": "1.0.0",
+  "description": "intiJualBeli",
+  "main": "JualBeliNode.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node JualBeliNode.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yogiHalim/Inventory"
+  },
+  "keywords": [
+    "inti",
+    "jualbeli"
+  ],
+  "author": "yogi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yogiHalim/Inventory/issues"
+  },
+  "homepage": "https://github.com/yogiHalim/Inventory#readme",
+  "dependencies": {
+    "instascan": "^1.0.0",
+    "mongodb": "^6.7.0"
+  }
+}

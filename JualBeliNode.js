@@ -67,7 +67,7 @@ async function fUtama(){
 
     async function fBaca(vClient,vCari){
       await vClient.connect();
-      const vCursor= await vClient.db("IntiCollection").collection("JualBeli").find({nama:vCari}).limit(5).sort({tanggal:-1}).toArray();
+      const vCursor= await vClient.db("IntiCollection").collection("JualBeli").find({nama:vCari}).limit(7).sort({tanggal:-1}).toArray();
       if (vCursor){console.log("ada",vCursor.nama,vCursor.umur,vCursor.matchedCount,vCursor,JSON.stringify(vCursor));}else{console.log("tidak ada")};
       res.writeHead(200,{'Content-Type':'text/json'});
       res.write(JSON.stringify(vCursor));
@@ -134,7 +134,7 @@ async function fUtama(){
 //vClient.close(); //-->?
 };
  
-//cek cek cek
+//cek cek cek 
 //cek vResult.find().sort({createdAt:-1}) --> descending
 
 //tampilkan 5 terakhir diupload, dan siapa yang sekarang sedang lihat/edit dalam 2 menit terakhir dan list 5 yang terakhir lihat
