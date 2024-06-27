@@ -160,15 +160,26 @@
     //div > * { vertical-align: middle; }.
 </script>
 <script> 
-document.querySelector('#lHal3').innerHTML=window.innerWidth+'mm window width '+ window.screen.width+'mm screen width <br>'+window.innerHeight+'mm window height '+window.screen.height+'mm screen height ';
-//to do1: onload vAjaxNama load dari mongo
+        document.querySelector('#lHal3').innerHTML=window.innerWidth+'mm window width '+ window.screen.width+'mm screen width <br>'+window.innerHeight+'mm window height '+window.screen.height+'mm screen height ';
+    //to do1: onload vAjaxNama load dari mongo
+    document.querySelector('#isiNamaBarang').value=decodeURIComponent("{{vQrScan}}");
+// Assuming you're using fetch or XMLHttpRequest to get the data
+// fetch('/apiQrScan') // Replace with your server route
+//   .then(vResponse => vResponse.text())
+//   .then(vQrScan => {
+//     document.getElementById('myInput').value = vQrScan;
+//   })
+//   .catch(error => console.error('Error fetching data:', error));
+
+
         document.querySelector('#pTgl').innerHTML=new Date().toLocaleString("id-id",{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'numeric'}).replace('pukul','pk.');
         // let [day, date, bulan, year, pukul, jam]=document.querySelector('#pTgl').innerHTML.split(" ");
         // let [hour,min]=jam.split(".");
         // month=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"].indexOf(bulan)+1;
         //vTanggal=year+"0"+month+date+hour+min;
         //vTanggal=new Date().toLocaleString('id-ID',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).replace(/[^\d]/g, '');
-        vTanggal=Number(new Date().toISOString().replace(/[^\d]/g,'').slice(0,12))+700; //to isostring + 7 jam replace ./;
+        vTanggal=Number(new Date().toISOString().replace(/[^\d]/g,'').slice(0,12))+700; //to isostring + 7 jam replace ./; //hati-hati awalan nol number dihilangkan? untung disini awalan 2024 bukan tanggal
+
         function fTotal(){document.querySelector('#pTotal').innerHTML='Total = Rp.'+new Intl.NumberFormat('id-id').format(document.querySelector('#isiJumlah').value*document.querySelector('#isiHarga').value);console.log('haiiii')};
         function fQrBuat(){const vTeksQr='https://api.qrserver.com/v1/create-qr-code/?data='; const vTeksQr2=document.querySelector('#isiNamaBarang').value; document.querySelector('#imgQr').setAttribute('src',vTeksQr+vTeksQr2);}
         let vIconIndex=0,vIconLoop=0;
@@ -193,7 +204,7 @@ document.querySelector('#lHal3').innerHTML=window.innerWidth+'mm window width '+
             document.querySelector('#isiJumlah').placeholder='Jumlah '+vJualBeli;
             document.querySelector('#isiHarga').placeholder='Harga '+vJualBeli;
         };
-        
+
         const fBacaAwal=async (e)=>{
             //e.preventDefault();
             const vXhr=new XMLHttpRequest();
@@ -294,6 +305,7 @@ document.querySelector('#lHal3').innerHTML=window.innerWidth+'mm window width '+
             vCatatString=JSON.stringify(vCatatTgl);
             console.log(vCatatString);
             vXhr.send(vCatatString); 
+            fBacaAwal();
         };
     
         const vKlikForm=document.querySelector('#idForm');

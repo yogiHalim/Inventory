@@ -1,5 +1,6 @@
 const fs = require('fs');
 const { MongoClient, ServerApiVersion , ObjectId } = require('mongodb');
+const url = require('url');
 //dependency dicut dari package.json     "@google-cloud/functions-framework": "^3.4.0",
 fUtama().catch(console.error);
 
@@ -34,11 +35,12 @@ async function fUtama(){
 
   const http = require('http');
   const vServer=http.createServer((req,res)=>{  
-    console.log(req.url, req.method);
+    console.log(req.url, req.method, url.parse(req.url).pathname, url.parse(req.url).query);
     
     if (req.method==='GET'){
       let vPath ="./";
-      switch (req.url) {
+      const vQrScan=url.parse(req.url).query;
+      switch (url.parse(req.url).pathname) {
         case '/':
           vPath+='JualBeli.html'; //case sensitive di cloud, engga di local
           console.log(vPath+'0');
@@ -47,25 +49,28 @@ async function fUtama(){
           vPath+='package.json';
           console.log(vPath+'2');
           break;
+        // case '/apiQrScan':
+        //   res.end(vQrScan);
+            break;
         default :vPath+='coba.html';
         console.log(vPath+'3');
         //fs.write req.url untuk catat orang nyasar kemana aja
         break;
       };
     
-      fs.readFile(vPath, function(err, data) {
-        //console.log('1'+this.responseText+data);
-        if (err) {
-          res.writeHead(404, {'Content-Type': 'text/html'});
-          return res.end("404 Not Found kan ya");
-        } 
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.write(data);
+      fs.readFile(vPath, function(err, vHtml) {
+        res.writeHead(200, {'Content-Type': 'text/html'})
+        res.write(vHtml.toString().replace('{{vQrScan}}',url.parse(req.url).query));
         res.end();
       });
+      //document.querySelector("#isiNamaBarang").value=${url.parse(req.url).query};alert(document.querySelector("#isiNamaBarang").value
+      //console.log(url.parse(req.url).query+url.parse(req.url).query.split('?')[0]+'queryyyyyyyyyyy')
+      //res.end(`${url.parse(req.url).query}`);
+        //`${vHtml.replace('{{vQrScan}}',url.parse(req.url).query)}`);
+
       //scan dari qrcode req.url ambil nama barang, fBaca(), onload status==200 nama barang=this.response --> cek this respon nya fs readFile apa fBaca();
     };
-
+    
     async function fBaca(vClient,vCari){
       await vClient.connect();
       const vCursor= await vClient.db("IntiCollection").collection("JualBeli").find({nama:vCari}).limit(6).sort({tanggal:-1}).toArray();
@@ -131,6 +136,8 @@ async function fUtama(){
   vServer.listen(PORT,()=>{
     console.log('listening port '+PORT+' ya');  
   });
+
+//pass variable to frontend --> res.end(`Pathname: ${pathname}`); res.end(`Value of "myParam": ${vMyParam}`); 
 
 //vClient.close(); //-->?
 };
