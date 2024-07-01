@@ -117,132 +117,149 @@ ratio 1:1.83 window 1:2.1667
 
 kode cara alternatif.
 coba qrcode1
-<script src="https://unpkg.com/html5-qrcode">
-    function onScanSuccess(v1,v2){alert(v1,v2)};
-    window.onload=new Html5QrcodeScanner("divQR",{fps:10,qrbox:250}).render(onScanSuccess)
-    function domReady(fn){
-        if (document.readyState==='complete'||document.readyState==='interactive'){setTimeout(fn,1)}else{document.addEventListener('DOMContentLoaded,fn')}}
-    domReady(function(){
-        var myqr =document.getElementById('divQR')
-        var lastResult,countResults=0;
-        function onScanSuccess(decodeText,decodeResult){
-            if(decodeText!==lastResult){++countResults;lastResult=decodeText;alert('decodeText,decodeResult');myqr.innerHTML=countResults+decodeText;}
-        }
-        var htmlscanner = new Html5QrcodeScanner("divQR",{fps:10,qrbox:250})
-        htmlscanner.render(onScanSuccess)
-    })
-</script>
-qr scanner React library
-import React from "react";
-import Scanner from "react-webcam-qr-scanner";
+  <script src="https://unpkg.com/html5-qrcode">
+      function onScanSuccess(v1,v2){alert(v1,v2)};
+      window.onload=new Html5QrcodeScanner("divQR",{fps:10,qrbox:250}).render(onScanSuccess)
+      function domReady(fn){
+          if (document.readyState==='complete'||document.readyState==='interactive'){setTimeout(fn,1)}else{document.addEventListener('DOMContentLoaded,fn')}}
+      domReady(function(){
+          var myqr =document.getElementById('divQR')
+          var lastResult,countResults=0;
+          function onScanSuccess(decodeText,decodeResult){
+              if(decodeText!==lastResult){++countResults;lastResult=decodeText;alert('decodeText,decodeResult');myqr.innerHTML=countResults+decodeText;}
+          }
+          var htmlscanner = new Html5QrcodeScanner("divQR",{fps:10,qrbox:250})
+          htmlscanner.render(onScanSuccess)
+      })
+  </script>
+  qr scanner React library
+  import React from "react";
+  import Scanner from "react-webcam-qr-scanner";
 
-const MyAwesomeComponent = () => {
-    const handleDecode = (result) => {
-        console.log(result); // Handle the decoded result
-    };
+  const MyAwesomeComponent = () => {
+      const handleDecode = (result) => {
+          console.log(result); // Handle the decoded result
+      };
 
-    const handleScannerLoad = (mode) => {
-        console.log(mode); // Handle scanner load event
-    };
+      const handleScannerLoad = (mode) => {
+          console.log(mode); // Handle scanner load event
+      };
 
-    return (
-        <Scanner
-            className="some-classname"
-            onDecode={handleDecode}
-            onScannerLoad={handleScannerLoad}
-            constraints={{ audio: false, video: { facingMode: "environment" } }}
-            captureSize={{ width: 1280, height: 720 }}
-        />
-    );
-};
+      return (
+          <Scanner
+              className="some-classname"
+              onDecode={handleDecode}
+              onScannerLoad={handleScannerLoad}
+              constraints={{ audio: false, video: { facingMode: "environment" } }}
+              captureSize={{ width: 1280, height: 720 }}
+          />
+      );
+  };
 
 
-qr api dari gambar QRCode yang dimuat di <img>
-    // check compatibility
-if (!("BarcodeDetector" in globalThis)) {
-  alert("Barcode Detector is not supported by this browser.");
-} else {
-    alert("Barcode Detector supported!");
+  qr api dari gambar QRCode yang dimuat di <img>
+      // check compatibility
+  if (!("BarcodeDetector" in globalThis)) {
+    alert("Barcode Detector is not supported by this browser.");
+  } else {
+      alert("Barcode Detector supported!");
 
-  // create new detector
-  const barcodeDetector = new BarcodeDetector({
-    formats: ["code_39", "codabar", "ean_13"],
+    // create new detector
+    const barcodeDetector = new BarcodeDetector({
+      formats: ["code_39", "codabar", "ean_13"],
+    });
+  }
+
+  // check supported types
+  BarcodeDetector.getSupportedFormats().then((supportedFormats) => {
+    supportedFormats.forEach((format) => console.log(format));
   });
-}
-
-// check supported types
-BarcodeDetector.getSupportedFormats().then((supportedFormats) => {
-  supportedFormats.forEach((format) => console.log(format));
-});
 
 
-// detect barcodes
-const imageEl = document.querySelector("#imgQr"); //tambahan yogi, kira2 dari chatGPT
-barcodeDetector
-  .detect(imageEl)
-  .then((barcodes) => {
-    barcodes.forEach((barcode) => {console.log(barcode.rawValue); document.querySelector('#isiNamaBarang').value=barcode.rawValue;}
-  )})
-  .catch((err) => {
-    console.log(err);
-  });
-// https://developer.mozilla.org/en-US/docs/Web/API/Barcode_Detection_API
+  // detect barcodes
+  const imageEl = document.querySelector("#imgQr"); //tambahan yogi, kira2 dari chatGPT
+  barcodeDetector
+    .detect(imageEl)
+    .then((barcodes) => {
+      barcodes.forEach((barcode) => {console.log(barcode.rawValue); document.querySelector('#isiNamaBarang').value=barcode.rawValue;}
+    )})
+    .catch((err) => {
+      console.log(err);
+    });
+  // https://developer.mozilla.org/en-US/docs/Web/API/Barcode_Detection_API
+
+css
+    cek parent child <script>if(document.querySelector('#idForm').contains(document.querySelector('#isiNamaBarang'))){alert('ya parent')}
+    cek lebar tinggi karakter dan spasi <!-- <a class="cPindahHal" style="width:4mm; height:10mm; background-color: #02130b2a; border-radius: 0px;">ksijy<br>ksijy<br></a> -->
+    opsi: pakai z-index atau opacity <!--onload=function(){document.querySelector('div').setAttribute('style','opacity:1')};
+    div > * { vertical-align: middle; } untuk semua isi div?
 
 shortest code untuk test send
   res.writeHead(200,{'Content-Type':'text/plain'}); res.write('Hello from App Engine!');res.end();return;     //hapus ini
 
+set tanggal
+  document.querySelector('#pTgl').innerHTML=new Date().toLocaleString("id-id",{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'numeric'}).replace('pukul','pk.');
+  let [day, date, bulan, year, pukul, jam]=document.querySelector('#pTgl').innerHTML.split(" ");
+  let [hour,min]=jam.split(".");
+  month=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"].indexOf(bulan)+1;
+  vTanggal=year+"0"+month+date+hour+min;
+  vTanggal=new Date().toLocaleString('id-ID',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).replace(/[^\d]/g, '');
+  vTanggal=Number(new Date().toISOString().replace(/[^\d]/g,'').slice(0,12))+700; //to isostring + 7 jam replace ./; //hati-hati awalan nol number dihilangkan? untung disini awalan 2024 bukan tanggal
+
+
+
 insert ke text
 
-// var MongoClient = require('mongodb').MongoClient;
-// var url = "mongodb://localhost:27017/";
+  // var MongoClient = require('mongodb').MongoClient;
+  // var url = "mongodb://localhost:27017/";
 
-// MongoClient.connect(url, function(err, db) {
-//   if (err) throw err;
-//   var dbo = db.db("mydb");
-//   var myobj = { name: "Company Inc", address: "Highway 37" };
-//   dbo.collection("customers").insertOne(myobj, function(err, res) {
-//     if (err) throw err;
-//     console.log("1 document inserted");
-//     db.close();
-//   });
-// });
-findOne
-  const vTampil= await vClient.db("IntiCollection").collection("JualBeli").findOne({nama:vCari});
-  if (vTampil){console.log("ada",vTampil.nama,vTampil.umur,vTampil.matchedCount,JSON.stringify(vTampil));}else{console.log("tidak ada")};
+  // MongoClient.connect(url, function(err, db) {
+  //   if (err) throw err;
+  //   var dbo = db.db("mydb");
+  //   var myobj = { name: "Company Inc", address: "Highway 37" };
+  //   dbo.collection("customers").insertOne(myobj, function(err, res) {
+  //     if (err) throw err;
+  //     console.log("1 document inserted");
+  //     db.close();
+  //   });
+  // });
+  findOne
+    const vTampil= await vClient.db("IntiCollection").collection("JualBeli").findOne({nama:vCari});
+    if (vTampil){console.log("ada",vTampil.nama,vTampil.umur,vTampil.matchedCount,JSON.stringify(vTampil));}else{console.log("tidak ada")};
 
-console.log(1+1);
-console.log(__dirname+'\\bulanan.txt); --> cancel \ dengan dua gini \\
-console.log(__filename);
-const zPath=wPath+%5C+vPath;
+  console.log(1+1);
+  console.log(__dirname+'\\bulanan.txt); --> cancel \ dengan dua gini \\
+  console.log(__filename);
+  const zPath=wPath+%5C+vPath;
 
-const fs = require('fs');
-const { json } = require('stream/consumers');
-const aa =  JSON.stringify([
-  {
-      "nama":"yogi",
-      "umur":41,
-      "pets":[
-          { "animal":"dog", "name":"Fido" },
-          { "animal":"cat", "name":"Felix" },
-          { "animal":"hamster", "name":"Lightning" }
-      ]
-  },//'\n',
-  {
-    "nama":"uk",
-    "umur":41
-}])
+  const fs = require('fs');
+  const { json } = require('stream/consumers');
+  const aa =  JSON.stringify([
+    {
+        "nama":"yogi",
+        "umur":41,
+        "pets":[
+            { "animal":"dog", "name":"Fido" },
+            { "animal":"cat", "name":"Felix" },
+            { "animal":"hamster", "name":"Lightning" }
+        ]
+    },//'\n',
+    {
+      "nama":"uk",
+      "umur":41
+  }])
 
-// const ab = JSON.stringify([
-//   {
-//       "nama":"uk",
-//       "umur":41
-//   }
-//   ])
-  const a = aa//+'\n'+ab;
-  console.log(a);
-fs.writeFile('bulanan.txt',a,()=>{
-  console.log('tulis');
-});
+  // const ab = JSON.stringify([
+  //   {
+  //       "nama":"uk",
+  //       "umur":41
+  //   }
+  //   ])
+    const a = aa//+'\n'+ab;
+    console.log(a);
+  fs.writeFile('bulanan.txt',a,()=>{
+    console.log('tulis');
+  });
 
 window onload  
     window.onload=()=>{

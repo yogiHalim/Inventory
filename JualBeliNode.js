@@ -43,24 +43,24 @@ async function fUtama(){
       switch (url.parse(req.url).pathname) {
         case '/':
           vPath+='JualBeli.html'; //case sensitive di cloud, engga di local
-          console.log(vPath+'0');
           break;
         case '/about':
           vPath+='package.json';
-          console.log(vPath+'2');
           break;
-        // case '/apiQrScan':
-        //   res.end(vQrScan);
-            break;
+        case '/apiNota':
+          vPath+='nota.html';
+          break; 
         default :vPath+='coba.html';
-        console.log(vPath+'3');
-        //fs.write req.url untuk catat orang nyasar kemana aja
         break;
       };
+      console.log(vPath+'0');
     
+
       fs.readFile(vPath, function(err, vHtml) {
         res.writeHead(200, {'Content-Type': 'text/html'})
-        res.write(vHtml.toString().replace('{{vQrScan}}',url.parse(req.url).query));
+        if (url.parse(req.url).pathname="/"){
+        res.write(vHtml.toString().replace('{{vQrScanNama}}',url.parse(req.url,true).query.nama||'').replace('{{vQrScanIsiSatuan}}',url.parse(req.url,true).query.isiSatuan||'').replace('{{vQrScanUnitSatuan}}',url.parse(req.url,true).query.unitSatuan||''));
+        }else{res.write(vHtml);}
         res.end();
       });
       //document.querySelector("#isiNamaBarang").value=${url.parse(req.url).query};alert(document.querySelector("#isiNamaBarang").value
@@ -70,32 +70,60 @@ async function fUtama(){
 
       //scan dari qrcode req.url ambil nama barang, fBaca(), onload status==200 nama barang=this.response --> cek this respon nya fs readFile apa fBaca();
     };
-    
-    async function fBaca(vClient,vCari){
-      await vClient.connect();
-      const vCursor= await vClient.db("IntiCollection").collection("JualBeli").find({nama:vCari}).limit(6).sort({tanggal:-1}).toArray();
-      if (vCursor){console.log("ada",vCursor.nama,vCursor.umur,vCursor.matchedCount,vCursor,JSON.stringify(vCursor));}else{console.log("tidak ada")};
+    //async function fCatatTerkini(){}
+    // upsert
+    // mongo
+    // https://www.youtube.com/watch?v=fbYExfeFsI0&t=138s 
+    // menit 28:00 ${result.matchedCount} ${result.modifiedCount} 
+    // {upsert:true} result.upsertCount ${result.upsertedId}
+
+    async function fBacaNota(vClient,vCariNota,vSkip){
+      // await vClient.connect();
+      const vCursor=await vClient.db("IntiCollection").collection("JualBeli").find({nomorNota:vCariNota}).sort({tanggal:-1}).limit(8).skip(vSkip).toArray();
+      if (vCursor.length>0){console.log("ada ",vCursor.length,' document(s) nota ',vCursor)}
       res.writeHead(200,{'Content-Type':'text/json'});
       res.write(JSON.stringify(vCursor));
       res.end();
-      await vClient.close();
-    };
-    async function fCatat(vClient,vCatat2){
-      await vClient.connect();
-      await vClient.db('IntiCollection').collection('JualBeli').insertOne(vCatat2);
-      await vClient.close();
+      // await vClient.close();
     }
-    async function fHapusDiDb(vClient,vIdHapus){
-      await vClient.connect();
+    async function fBaca(vClient,vCari3,vSkip){
+      // await vClient.connect(); 
+      console.log(vCari3,'cari 3', vSkip,'skip')
+      const vCursor= await vClient.db("IntiCollection").collection("JualBeli").find(vCari3).limit(6).sort({tanggal:-1}).skip(vSkip).toArray();
+      if (vCursor.length>0){console.log("ada",vCursor[0].nama,' umur ',vCursor.length,' document(s) ditemukan',JSON.stringify(vCursor));console.table(vCursor);}else{console.log("tidak ada")};
+      res.writeHead(200,{'Content-Type':'text/json'});
+      if (vCursor.length>0){res.write(JSON.stringify(vCursor));}else{res.write(JSON.stringify([{nama:'  Akhir Data',jumlah:'==Akhir Data=='}]))}
+      console.table({nama:'==Akhir Data=='})
+      res.end();
+      // await vClient.close();
+    };
+    async function fCatatDiDB(vClient,vCatat2){
+      // await vClient.connect();
+      await vClient.db('IntiCollection').collection('JualBeli').insertOne(vCatat2);
+      //pakainya inseert.upsert:true await vClient.db('IntiCollection').collection('AjaxNama').upsert(nama=vCatat2.nama)
+      console.log('tercatat yay');
+      // await vClient.close();
+    }
+    async function fHapusDiDB(vClient,vIdHapus){
+      // await vClient.connect();
+      console.log(vIdHapus,'di fHApusDiDB')
       const vTerhapus=await vClient.db("IntiCollection").collection("JualBeli").deleteOne({_id:new ObjectId(vIdHapus)})
       console.log(vTerhapus,vIdHapus);
-      await vClient.close();
+      // await vClient.close();
     }
 
     if (req.method==='POST' && req.url==='/apiBacaAwal'){
-      let vCari1={$exists:true};
-      fBaca(vClient,vCari1);
+      let vCari1={nama:{$exists:true}};
+      let vSkip=0;
+      fBaca(vClient,vCari1,vSkip);
     };
+    if (req.method=='POST' && req.url=='/apiCetakNota'){
+      let vCariNota ='';
+      req.on('data',chunk=>{vCariNota+=chunk.toString();console.log(chunk.toString(),'chunk inii')});
+//      req.on('end',()=>{fBacaNota(vClient,{nomorNota:vCariNota})});
+      
+      req.on('end',()=>{vCariNota2=JSON.parse(vCariNota); fBacaNota(vClient,vCariNota2.nomorNota,Number(vCariNota2.skip));});
+    }
     if (req.method==='POST' && req.url==='/apiTampil'){
       let vCari = '';
         req.on('data', chunk => {
@@ -103,8 +131,12 @@ async function fUtama(){
           });
         req.on('end', () => {
           //vCari = Buffer.concat(vCari).toString();
-          const vCari2=JSON.parse(vCari); 
-          fBaca(vClient,vCari2.nama);
+          const vCari2=JSON.parse(vCari);
+          let vCari3={};
+          if (vCari2.tanggal){vCari3={tanggal:vCari2.tanggal}}
+          if (vCari2.nama){vCari3={nama:vCari2.nama}}else{vCari3={}}
+          if (!vCari2.halTampil){vSkip=0}else{vSkip=(vCari2.halTampil-1)*6;if(vSkip<1){vSkip=0}}
+          fBaca(vClient,vCari3,vSkip);
           });
       console.log(req.body);
     };
@@ -116,16 +148,17 @@ async function fUtama(){
       });
       req.on('end',()=>{
         vCatat2=JSON.parse(vCatat);
-        fCatat(vClient,vCatat2);
+        fCatatDiDB(vClient,vCatat2);
       });
     };
     if (req.method==='POST'&&req.url==='/apiHapus'){
       let vIdHapus=''
       req.on('data',chunk=>{
         vIdHapus+=chunk.toString();
+        console.log(vIdHapus,'di req.on')
       })
       req.on('end',()=>{
-        fHapusDiDb(vClient,vIdHapus);
+        fHapusDiDB(vClient,vIdHapus);
       })
     }
   });
