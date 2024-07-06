@@ -19,24 +19,33 @@
         #divFooter{border-top: 1mm solid black;margin-top: 2mm;}
         #Hal{background:none;border:none;width:2ch;text-align: right;}
         .cRupiah{display:inline;float:inline-end;width:15%;margin-right: 2ch;}
+        .cSpanJudul{width:45%}
+        .cNomorDiJudul{width:25%}
+        .cTokoDiJudul{width:20%}
+        .cJedaToko{width:55%;border:none; border-bottom: 1pt solid black;}
+        .cJedaTotal{width: 5%;}
+        .cKeterangan{text-align: center; padding:15px 0; border-top: 1mm solid black;}
         .cTanggal{width:20%}
-        .cNama{inline-size: 27%;}
-        .cHarga{inline-size: 11%;text-align: right;}
+        .cNomorUrut{width:4%}
+        .cPlu{width:11%}
+        .cNama{inline-size: 36%;}
         .cJumlah{inline-size: 12%;text-align: right;}
+        .cHarga{inline-size: 11%;text-align: right;padding-right: 3px;}
         .cTotal{width:20%;text-align: right;}
         .cSiapCetak{visibility: hidden;}
         label{display:inline-block;padding:1mm;margin:0mm}
         span{display:inline-block;padding:1mm}
-        
     </style>
 
 </head>
 
 <body>
     <div id="divNota">
-    <span id="spanTanggal">Tanggal</span><br>
-    <label for="divNota">Nota</label><br><label id="lNomorNota">Nomor Nota : </label><input value="7127" name="nomorNota" id="isiNomorNota" maxlength="11" type="text" onblur="fTampilNota()">
-    <div id="divIsi"><!--<div style="width:50%">50%</div><div style="width:15%">15%</div>--></div>
+    <span class="cSpanJudul"><span>Argo Kunci Sukses (A106)</span><br><br><span class="cNomorDiJudul">Nomor PO</span><input class="cJedaToko"/><br><label id="lNomorNota" class="cNomorDiJudul">Nomor Nota</label><input value=0 name="nomorNota" id="isiNomorNota" maxlength="27" type="text" onblur="fTampilNota()"/></span>
+    <span></span>
+    <span class="cSpanJudul"><span id="spanTanggal">Tanggal</span><br><br><span class="cTokoDiJudul">Toko:</span><input class="cJedaToko"/> <br><span class="cTokoDiJudul">Kota:</span><input class="cJedaToko"/></span>
+    <br><span class="cNomorUrut cKeterangan">&nbsp</span><span class="cPlu cKeterangan">PLU</span><span class="cNama cKeterangan">NAMA BARANG</span><span class="cJedaTotal cKeterangan">&nbsp;</span><span class="cJumlah cKeterangan">JUMLAH</span><span class="cKeterangan cHarga ">HARGA</span> <span class="cKeterangan cTotal ">T O T A L</span>
+    <div id="divIsi"></div>
     <div id="divFooter"></div>
     <div id="divTotal" class="cRupiah">Rp.900.000.000,-</div><label for="divTotal">Total : </label> 
     <span name="nPilihCetak">Halaman : </span> <input id="Hal" name="nPilihCetak" value="1"/> 
@@ -48,6 +57,7 @@
     const fTampilNota=async (event)=>{
         const vXhr=new XMLHttpRequest();
         await vXhr.open('POST','/apiCetakNota');
+        if(document.querySelector('#Hal').value<1){document.querySelector('#Hal').value=1}
         vXhr.send(JSON.stringify({nomorNota:`${document.querySelector('#isiNomorNota').value}`,skip:`${(document.querySelector('#Hal').value-1)*8}`}));
         vXhr.onload=function(){if(vXhr.status==200){fTampil(vMuat1=JSON.parse(vXhr.responseText),vDivIsi=document.querySelector('#divIsi'));}}
     }
@@ -56,30 +66,26 @@
         while (vMuatDi.firstChild){vMuatDi.firstChild.remove()};
         let vTotal=0;
         for (let i=0; i<vMuat.length;i++){
-            const vSpanTanggal = document.createElement('span');
-            vMuatTanggal1=JSON.stringify(vMuat[i].tanggal);
-            if (typeof vMuatTanggal1=='undefined') {vMuatTanggal1='';}
-            vSliceTahun=vMuatTanggal1.slice(0,4);
-            vSliceBulan=vMuatTanggal1.slice(4,6);
-            vSliceTanggal=vMuatTanggal1.slice(6,8);
-            vSliceJam=vMuatTanggal1.slice(8,10);
-            vSliceMenit=vMuatTanggal1.slice(10,12);
-            vMuatTanggal2=`${vSliceTahun}-${vSliceBulan}-${vSliceTanggal} ${vSliceJam}:${vSliceMenit}`; 
-            vSpanTanggal.innerHTML=new Date(vMuatTanggal2).toLocaleString("id-id",{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-            vSpanTanggal.setAttribute('class','cTanggal');
+            const vSpanNomorUrut=document.createElement('span');
+            vSpanNomorUrut.innerText=i+1;
+            vSpanNomorUrut.setAttribute('class','cNomorUrut')
+            const vSpanPlu=document.createElement('span');
+            vSpanPlu.innerText=vMuat[i].plu;
+            vSpanPlu.setAttribute('class','cPlu');
             const vSpanNama=document.createElement('span');
             vSpanNama.innerText=vMuat[i].nama;
             vSpanNama.setAttribute('class','cNama');
             const vSpanHarga=document.createElement('span');
-            vSpanHarga.innerHTML='Rp. '+new Intl.NumberFormat('id-id').format(vMuat[i].harga);
+            vSpanHarga.innerText='Rp. '+new Intl.NumberFormat('id-id').format(vMuat[i].harga);
             vSpanHarga.setAttribute('class','cHarga');
             const vSpanJumlah=document.createElement('span');
-            vSpanJumlah.innerHTML=vMuat[i].jumlah+' px.'
+            vSpanJumlah.innerText=vMuat[i].jumlah+' px.'
             vSpanJumlah.setAttribute('class','cJumlah');
             const vSpanTotal=document.createElement('span');
-            vSpanTotal.innerHTML='Rp. '+new Intl.NumberFormat('id-id').format(vMuat[i].jumlah*vMuat[i].harga)+'<br>';
+            vSpanTotal.innerHTML='Rp. '+new Intl.NumberFormat('id-id').format(vMuat[i].jumlah*vMuat[i].harga)+`<br>`+`\n`;
             vSpanTotal.setAttribute('class','cTotal');
-            vMuatDi.appendChild(vSpanTanggal);
+            vMuatDi.appendChild(vSpanNomorUrut);
+            vMuatDi.appendChild(vSpanPlu);
             vMuatDi.appendChild(vSpanNama);
             vMuatDi.appendChild(vSpanJumlah);
             vMuatDi.appendChild(vSpanHarga);

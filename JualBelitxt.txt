@@ -206,7 +206,17 @@ set tanggal
   vTanggal=new Date().toLocaleString('id-ID',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).replace(/[^\d]/g, '');
   vTanggal=Number(new Date().toISOString().replace(/[^\d]/g,'').slice(0,12))+700; //to isostring + 7 jam replace ./; //hati-hati awalan nol number dihilangkan? untung disini awalan 2024 bukan tanggal
 
-
+    const vSpanTanggal = document.createElement('span');
+    vMuatTanggal1=String(vMuat[i].tanggal);
+    if (typeof vMuatTanggal1=='undefined') {vMuatTanggal1='';}
+    vSliceTahun=vMuatTanggal1.slice(0,4);
+    vSliceBulan=vMuatTanggal1.slice(4,6);
+    vSliceTanggal=vMuatTanggal1.slice(6,8);
+    vSliceJam=vMuatTanggal1.slice(8,10);
+    vSliceMenit=vMuatTanggal1.slice(10,12);
+    vMuatTanggal2=`${vSliceTahun}-${vSliceBulan}-${vSliceTanggal} ${vSliceJam}:${vSliceMenit}`; 
+    vSpanTanggal.innerHTML=new Date(vMuatTanggal2).toLocaleString("id-id",{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    vSpanTanggal.setAttribute('class','cTanggal');
 
 insert ke text
 

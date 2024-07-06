@@ -43,6 +43,7 @@ async function fUtama(){
       switch (url.parse(req.url).pathname) {
         case '/':
           vPath+='JualBeli.html'; //case sensitive di cloud, engga di local
+          console.log(vPath+'1')
           break;
         case '/about':
           vPath+='package.json';
@@ -50,7 +51,7 @@ async function fUtama(){
         case '/apiNota':
           vPath+='nota.html';
           break; 
-        default :vPath+='coba.html';
+        default :vPath+='404.html';
         break;
       };
       console.log(vPath+'0');
@@ -79,7 +80,8 @@ async function fUtama(){
 
     async function fBacaNota(vClient,vCariNota,vSkip){
       // await vClient.connect();
-      const vCursor=await vClient.db("IntiCollection").collection("JualBeli").find({nomorNota:vCariNota}).sort({tanggal:-1}).limit(8).skip(vSkip).toArray();
+      console.log(vCariNota)
+      const vCursor=await vClient.db("IntiCollection").collection("JualBeli").find(vCariNota).sort({tanggal:-1}).skip(vSkip).toArray();
       if (vCursor.length>0){console.log("ada ",vCursor.length,' document(s) nota ',vCursor)}
       res.writeHead(200,{'Content-Type':'text/json'});
       res.write(JSON.stringify(vCursor));
@@ -122,7 +124,7 @@ async function fUtama(){
       req.on('data',chunk=>{vCariNota+=chunk.toString();console.log(chunk.toString(),'chunk inii')});
 //      req.on('end',()=>{fBacaNota(vClient,{nomorNota:vCariNota})});
       
-      req.on('end',()=>{vCariNota2=JSON.parse(vCariNota); fBacaNota(vClient,vCariNota2.nomorNota,Number(vCariNota2.skip));});
+      req.on('end',()=>{vCariNota2=JSON.parse(vCariNota); console.log(vCariNota2,'sebelum if'); if(vCariNota2.nomorNota=='0'){console.log('kosong'); vCariNota2.nomorNota={ $exists: true }} fBacaNota(vClient,{nomorNota:vCariNota2.nomorNota},Number(vCariNota2.skip));});
     }
     if (req.method==='POST' && req.url==='/apiTampil'){
       let vCari = '';
@@ -138,7 +140,6 @@ async function fUtama(){
           if (!vCari2.halTampil){vSkip=0}else{vSkip=(vCari2.halTampil-1)*6;if(vSkip<1){vSkip=0}}
           fBaca(vClient,vCari3,vSkip);
           });
-      console.log(req.body);
     };
 
     if (req.method==='POST' && req.url==='/apiCatat'){
