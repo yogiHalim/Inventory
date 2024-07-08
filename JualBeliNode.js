@@ -77,7 +77,9 @@ async function fUtama(){
     // https://www.youtube.com/watch?v=fbYExfeFsI0&t=138s 
     // menit 28:00 ${result.matchedCount} ${result.modifiedCount} 
     // {upsert:true} result.upsertCount ${result.upsertedId}
-
+    async function fBacaAjax(){
+      console.log('hai fBacaAjax')
+    }
     async function fBacaNota(vClient,vCariNota,vSkip){
       // await vClient.connect();
       console.log(vCariNota)
@@ -102,9 +104,13 @@ async function fUtama(){
     async function fCatatDiDB(vClient,vCatat2){
       // await vClient.connect();
       await vClient.db('IntiCollection').collection('JualBeli').insertOne(vCatat2);
+      console.log('tercatat yay '+vCatat2);
       //pakainya inseert.upsert:true await vClient.db('IntiCollection').collection('AjaxNama').upsert(nama=vCatat2.nama)
-      console.log('tercatat yay');
       // await vClient.close();
+    }
+    async function fCatatAjax(vClient,vCatat2){
+      await vClient.db('IntiCollection').collection('ColAjaxNama').insertOne(vCatat2);
+      console.log('catat di ajaxnama :'+vCatat2)
     }
     async function fHapusDiDB(vClient,vIdHapus){
       // await vClient.connect();
@@ -118,6 +124,8 @@ async function fUtama(){
       let vCari1={nama:{$exists:true}};
       let vSkip=0;
       fBaca(vClient,vCari1,vSkip);
+      vCol2='ColAjaxNama';
+      fBacaAjax(vClient,vCol2,vCari1,vSkip) //---> karena tampilannya beda dari fBaca(); disini tidak pakai skip2 halaman di bagian res.write nya
     };
     if (req.method=='POST' && req.url=='/apiCetakNota'){
       let vCariNota ='';
@@ -149,7 +157,8 @@ async function fUtama(){
       });
       req.on('end',()=>{
         vCatat2=JSON.parse(vCatat);
-        fCatatDiDB(vClient,vCatat2);
+        fCatatDiDB(vClient,vCatat2.SimpanDiDb);
+        fCatatAjax(vClient,vCAtat2.AjaxNama);
       });
     };
     if (req.method==='POST'&&req.url==='/apiHapus'){

@@ -2,5 +2,7 @@
     "appService.zipIgnorePattern": [
         "node_modules{,/**}",
         ".vscode{,/**}"
-    ]
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/c53b5b6e-e20c-4bba-bbd2-ebbdfd9b6379/resourceGroups/ResourceGroupInti/providers/Microsoft.Web/sites/inticollection",
+    "appService.deploySubpath": "."
 }
