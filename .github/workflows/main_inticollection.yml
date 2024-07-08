@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -26,15 +26,12 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
-
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
-
+      
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: release.zip
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
@@ -50,20 +47,17 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: node-app
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
       
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_39B99742D58D4132B0F87C15EE90A338 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_82E4BD87EBA342D69BFF3F628ACE9888 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E4134AC1B4A144FABFB3AC8D9CAFA50F }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_17E70D88683A4A76A4B4DD2EFB990969 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B1B5E2FABEA9415F810507F5FE19421C }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4C73EA57B6AA42EE9937CAA68F31C560 }}
 
       - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
+        id: deploy-to-webapp
         with:
           app-name: 'inticollection'
           slot-name: 'Production'
