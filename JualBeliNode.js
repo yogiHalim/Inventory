@@ -29,8 +29,9 @@ async function fUtama(){
     vDaftarDBS.databases.forEach(db => {
       console.log(`- ${db.name}`);
       //console.log(db.name);
-      vClient.db()
+      //vClient.db()
     }); 
+    await vClient.db('IntiCollection').listCollections().forEach(vListCol=>{console.log(`collection : ${vListCol.name}`)});
   }
 
   const http = require('http');
@@ -51,6 +52,9 @@ async function fUtama(){
         case '/apiNota':
           vPath+='nota.html';
           break; 
+        case '/ubahKodePass':
+          vPath+='ubahKodeAkses.html';
+          break;
         default :vPath+='404.html';
         break;
       };
@@ -77,8 +81,12 @@ async function fUtama(){
     // https://www.youtube.com/watch?v=fbYExfeFsI0&t=138s 
     // menit 28:00 ${result.matchedCount} ${result.modifiedCount} 
     // {upsert:true} result.upsertCount ${result.upsertedId}
-    async function fBacaAjax(){
-      console.log('hai fBacaAjax')
+    async function fBacaAjax(vClient,vCol2,vCariAjax){
+      console.log(vCol2,vCariAjax);
+      const vCursor= await vClient.db('IntiCollection').collection('vCol2').find(vCariAjax).toArray();
+      res.writeHead(200,{'Content-Type':'text-json'});
+      res.write(JSON.stringify(vCursor));
+      res.end();
     }
     async function fBacaNota(vClient,vCariNota,vSkip){
       // await vClient.connect();
@@ -124,8 +132,12 @@ async function fUtama(){
       let vCari1={nama:{$exists:true}};
       let vSkip=0;
       fBaca(vClient,vCari1,vSkip);
+    }
+    if(req.method==='POST'&& req.url==='/apiAjaxNama'){
+      vCari={nama:{exists:true}};
+      vSkip=0;
       vCol2='ColAjaxNama';
-      fBacaAjax(vClient,vCol2,vCari1,vSkip) //---> karena tampilannya beda dari fBaca(); disini tidak pakai skip2 halaman di bagian res.write nya
+      fBacaAjax(vClient,vCol2,vCari,vSkip) //---> karena tampilannya beda dari fBaca(); disini tidak pakai skip2 halaman di bagian res.write nya
     };
     if (req.method=='POST' && req.url=='/apiCetakNota'){
       let vCariNota ='';
@@ -144,12 +156,11 @@ async function fUtama(){
           const vCari2=JSON.parse(vCari);
           let vCari3={};
           if (vCari2.tanggal){vCari3={tanggal:vCari2.tanggal}}
-          if (vCari2.nama){vCari3={nama:vCari2.nama}}else{vCari3={}}
+          if (vCari2.nama){vCari3={nama:vCari2.nama}}else{vCari3={}} //+isiSatuan+' '+unitSatuan -------------------------tambah ke semua vCari
           if (!vCari2.halTampil){vSkip=0}else{vSkip=(vCari2.halTampil-1)*6;if(vSkip<1){vSkip=0}}
           fBaca(vClient,vCari3,vSkip);
           });
     };
-
     if (req.method==='POST' && req.url==='/apiCatat'){
       let vCatat=''
       req.on('data',chunk=>{

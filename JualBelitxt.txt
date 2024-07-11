@@ -95,25 +95,30 @@ async function fInputJualBeli(vClient,vData){
     console.log("count yang disimpan",vDataDisimpan.insertedCount, vDataDisimpan.insertedIds);
   }
 7. s23 screen size
-Height: 146.3 mm
-Width: 70.9 mm
-Depth: 7.6 mm
-laptop
-121mm window width 1384mm screen width
-569mm window height 779mm screen height
-tv changhong
-304mm window width 1730mm screen width
-725mm window height 973mm screen height
+  Height: 146.3 mm
+  Width: 70.9 mm
+  Depth: 7.6 mm
+  laptop
+  121mm window width 1384mm screen width
+  569mm window height 779mm screen height
+  tv changhong
+  304mm window width 1730mm screen width
+  725mm window height 973mm screen height
 
-samsung s23
-488mm window width 360mm screen width
-894mm window height 780mm screen height
-ratio 1:1.83 window 1:2.1667
-/* samsung s23 ratio width:height=68:144 mm*/ 425ppi resolusi 2340:1080 aspect ratio 19.5 : 9 = 2.1667
-= 5.506 inches : 2.54 inches dari 425ppinch tadi -->dibagi diagonal 6,06 inches
-=139.85mm : 64.55mm = 28 ppscm pixel per squared centimeter
-1cm = 8 pixel
+  samsung s23
+  488mm window width 360mm screen width
+  894mm window height 780mm screen height
+  ratio 1:1.83 window 1:2.1667
+  /* samsung s23 ratio width:height=68:144 mm*/ 425ppi resolusi 2340:1080 aspect ratio 19.5 : 9 = 2.1667
+  = 5.506 inches : 2.54 inches dari 425ppinch tadi -->dibagi diagonal 6,06 inches
+  =139.85mm : 64.55mm = 28 ppscm pixel per squared centimeter
+  1cm = 8 pixel
 
+8. akses vStokSimpanLokal=JSON.parse(localStorage.getItem('AjaxNama'))?.stok 
+  tapi engga error kalau localStorage.getItem('AjaxNama') nya null
+  namanya optional chaining operator
+
+9. etc etc
 
 kode cara alternatif.
 coba qrcode1
@@ -217,6 +222,25 @@ set tanggal
     vMuatTanggal2=`${vSliceTahun}-${vSliceBulan}-${vSliceTanggal} ${vSliceJam}:${vSliceMenit}`; 
     vSpanTanggal.innerHTML=new Date(vMuatTanggal2).toLocaleString("id-id",{weekday:'long',day:'numeric',month:'long',year:'numeric'});
     vSpanTanggal.setAttribute('class','cTanggal');
+
+vCatatNama
+  for (let i=2;i<8;i++){
+    if (i!==5 || i!==6){
+    vKey=vForm[i].name;
+    vValue=vForm[i].value;
+    vGabung={[vKey]:vValue};
+    vCatat={...vCatat,...vGabung};
+  }};
+  vCatatNama=JSON.stringify(document.querySelector('#isiNamaBarang').value+' '+document.querySelector('#isiSatuan').value+' '+document.querySelector('#unitSatuan').value)
+  vCatatTgl={tanggal:vTanggal,nama:vCatatNama,...vCatat};
+
+vCari yang nama nya ada di localStorage atau di collection mongo
+  if(vIsiLocalStrorage.findIndex((vAda)=>vAda.nama==vAjaxNama.nama) !== -1){
+    vIsiLocalStrorage[vIsiLocalStrorage.findIndex((vAda)=>vAda.nama==vAjaxNama.nama)]=vAjaxNama;
+  }else{
+    vIsiLocalStrorage.push(vAjaxNama)
+  }
+//findIndex menghasilkan indeks nya document yang sama dimana i=vIsiLocalStrorage.findIndex((vAda)=>vAda.nama==vAjaxNama.nama) --> misalnya hasilnya 3 berarti urutan array keempat
 
 insert ke text
 
