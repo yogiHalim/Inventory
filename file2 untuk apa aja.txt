@@ -1,0 +1,3 @@
+.deployment = azure
+.hintrc = vscode untuk gak munculin error dan hint
+next steps = azure developer for vscode, apa aja yang dilakukan setelah install

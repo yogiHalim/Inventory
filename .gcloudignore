@@ -12,6 +12,15 @@
 # below:
 .git
 .gitignore
+.deployment
+.hintrc
+azd next-steps
+azure.yaml
+.azure/
+.git/
+.github/
+.vscode/
+infra/
 
 # Node.js dependencies:
 node_modules/
