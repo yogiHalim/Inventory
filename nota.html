@@ -11,7 +11,7 @@
         #divNota{width:210mm;height:297mm;margin:0mm;padding:20mm 10mm;background-color: aliceblue;} /*border:0.2mm solid black} */
         #spanTanggal{margin-bottom: 2pt; display:inline-block; position:relative; right:0; left:auto}
         #lNomorNota{display:inline-block;}
-        #isiNomorNota{background: transparent; border: none; outline-width: thin; border-bottom: 1pt solid black;padding-bottom:1pt}
+        #isiNomorNota{background:transparent; border: none; outline-width: thin; border-bottom: 1pt solid black;padding-bottom:1pt}
         #divIsi{height:auto;overflow: hidden;padding:5mm 0mm; border-top:1mm solid black;margin-top: 1pt;}
         #lTotal{text-align: right;}
         label[for="divTotal"]{display:block;text-align: right;font-size: 16pt;width:100%;}
@@ -22,7 +22,7 @@
         .cSpanJudul{width:45%}
         .cNomorDiJudul{width:25%}
         .cTokoDiJudul{width:20%}
-        .cJedaToko{width:55%;border:none; border-bottom: 1pt solid black;}
+        .cJedaToko{background:transparent; width:55%;border:none; border-bottom: 1pt solid black;}
         .cJedaTotal{width: 5%;}
         .cKeterangan{text-align: center; padding:15px 0; border-top: 1mm solid black;}
         .cTanggal{width:20%}
@@ -43,7 +43,7 @@
     <div id="divNota">
     <span class="cSpanJudul"><span>Argo Kunci Sukses (A106)</span><br><br><span class="cNomorDiJudul">Nomor PO</span><input class="cJedaToko"/><br><label id="lNomorNota" class="cNomorDiJudul">Nomor Nota</label><input value=0 name="nomorNota" id="isiNomorNota" maxlength="27" type="text" onblur="fTampilNota()"/></span>
     <span></span>
-    <span class="cSpanJudul"><span id="spanTanggal">Tanggal</span><br><br><span class="cTokoDiJudul">Toko:</span><input class="cJedaToko"/> <br><span class="cTokoDiJudul">Kota:</span><input class="cJedaToko"/></span>
+    <span class="cSpanJudul"><span id="spanTanggal">Tanggal</span><br><br><span class="cTokoDiJudul">Toko:</span><input class="cJedaToko" id="isiToko"/> <br><span class="cTokoDiJudul" >Kota:</span><input class="cJedaToko" id="isiTokoDiKota"/></span>
     <br><span class="cNomorUrut cKeterangan">&nbsp</span><span class="cPlu cKeterangan">PLU</span><span class="cNama cKeterangan">NAMA BARANG</span><span class="cJedaTotal cKeterangan">&nbsp;</span><span class="cJumlah cKeterangan">JUMLAH</span><span class="cKeterangan cHarga ">HARGA</span> <span class="cKeterangan cTotal ">T O T A L</span>
     <div id="divIsi"></div>
     <div id="divFooter"></div>
@@ -59,8 +59,8 @@
         await vXhr.open('POST','/apiCetakNota');
         if(document.querySelector('#Hal').value<1){document.querySelector('#Hal').value=1}
         vXhr.send(JSON.stringify({nomorNota:`${document.querySelector('#isiNomorNota').value}`,skip:`${(document.querySelector('#Hal').value-1)*8}`}));
-        vXhr.onload=function(){if(vXhr.status==200){fTampil(vMuat1=JSON.parse(vXhr.responseText),vDivIsi=document.querySelector('#divIsi'));}}
-    }
+        vXhr.onload=function(){if(vXhr.status==200){fTampil(vMuat1=JSON.parse(vXhr.responseText),vDivIsi=document.querySelector('#divIsi'));}} //-----> vDivIsi ini kyny ga kepake? vDivIsi buat ngisi vMuatDi
+    }//  -----|> buat ajax nomor nota, nomor PO, toko tokoDiKota; filter duplicate nomor nota atau nomor PO
     fTampilNota();
     function fTampil(vMuat,vMuatDi){
         while (vMuatDi.firstChild){vMuatDi.firstChild.remove()};
@@ -92,6 +92,8 @@
             vMuatDi.appendChild(vSpanTotal);
             vTotal+=vMuat[i].jumlah*vMuat[i].harga;
             document.querySelector('#divTotal').innerHTML='Rp.'+new Intl.NumberFormat('id-id').format(vTotal);
+            document.querySelector('#isiToko').value=vMuat[0].toko;
+            document.querySelector('#isiTokoDiKota').value=vMuat[0].tokoDiKota;
         };
     };
     function fSiapCetak(){document.querySelectorAll('[name="nPilihCetak"]').forEach((vSiapCetak)=>{vSiapCetak.classList.toggle('cSiapCetak')})}

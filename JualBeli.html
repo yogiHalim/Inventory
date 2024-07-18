@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entry Jual dan Entry Beli</title>
     <style>
-        *{
-            width:70.9mm;
+        html,body{width:93mm;height:160mm; margin:0;}
+        *{  width:70.9mm;
             font-size: 14px; color: #5d009b;
             border-radius: 5px; box-sizing: border-box;
         }
@@ -39,7 +39,9 @@
             position:absolute; top:2mm; right:2mm; width:8mm; height:8mm;text-align: right;}
         .cToggleTanyaHapus,.cToggleAjaxNama{visibility: hidden; background-color:rgb(84, 189, 173);}
         .cSpanAjaxNama{
-            margin:1em}
+            display:inline-block;
+            width:45%;
+            margin:0.5em;}
         .cIsi2{
             display:inline-block;width:47%;}
 
@@ -50,8 +52,8 @@
             position:relative;right:0;content:'';width:100%;
         }
         #spanTgl:active,#spanTgl:active+.cSpanHapus,#spanTgl:active+.cSpanHapus+.cSpanHapus{background-color: #da4cec;}
-        #alertHapus,#alertAjaxNama{
-            position:fixed; margin-left: 0mm ; height:180px; padding-top: 15px; background-color: aliceblue; opacity:1; z-index: 2; width:75mm;
+        #alertHapus,#alertAjaxNama,#alertAjaxNamaDiv{
+            position:fixed; top:197px; margin-left: 0mm ; height:180px; padding-top: 15px; background-color: aliceblue; opacity:1; z-index: 2; width:75mm;
         }
         #alertHapus span{
             padding-left: 5mm; margin:0; height:18px; padding:2px 0px; position:relative;left:3mm;
@@ -102,7 +104,10 @@
                 <span>ketik hapus <br> untuk lanjut hapus yang dipilih</span> <br> <input id="ketikHapus" maxlength="5" type="text" style="width:71mm" />
                 <button type="button" class="tombolKecil" onclick="fHapus();">Hapus</button><button onclick='fToggleTanyaHapus();document.querySelectorAll("#divMuat span").forEach(function(element){element.style.backgroundColor="transparent";})' type="button" class="tombolKecil">ndak jadi</button> 
             </div>
-            <div id="alertAjaxNama" class="cToggleAjaxNama" style="top:204px"  onclick="fToggleAjaxNama();">X<span> Ketik Nama Barang, daftar akan muncul disini</span></div>
+            <div id="alertAjaxNamaDiv" style="height:225px;padding:0;">
+                <span style="display:inline-block; width:70mm; z-index: 4;"></span>
+                <span onclick="fToggleAjaxNama()" style="position:fixed; z-index: 4; margin:0 1ch auto auto; width: 2ch">X</span>
+                <div id="alertAjaxNama" style="z-index:3;height:225px;"  onblur="fToggleAjaxNama();"><span> Ketik Nama Barang, daftar akan muncul disini</span></div></div>
             <button type="button" id="klikJualBeli" onclick="fKlikJualBeli();" class="klik teks" style="background-color: #acffb5a9;color:#5d009b; margin-bottom:20px;">Saat Ini Mencatat Jual</button>
                 <p id="pTgl">Tanggal</p>
             <form  method="POST" action="/" id='idForm' style="width:calc(100% - 2mm);">
@@ -119,9 +124,9 @@
                         <option value="">belum diisi</option>
                         <option value="20000"></option>
                     </datalist>
-                <label for="isiNamaToko" id="lToko" class="cIsi2">Toko Jual</label><label for="isiTokoKota" class="cIsi2">Kota</label>
+                <label for="isiNamaToko" id="lToko" class="cIsi2">Toko Jual</label><label for="isiTokoDiKota" class="cIsi2">Kota</label>
                 <input name="toko" id="isiNamaToko" maxlength="27" type="text" placeholder="Toko yang disuplai" class="cIsi2">
-                <input name="tokoDiKota" id="isiTokoKota" maxlength="11" type="text" placeholder="Kota" class="cIsi2">
+                <input name="tokoDiKota" id="isiTokoDiKota" maxlength="11" type="text" placeholder="Kota" class="cIsi2">
                 <label for="isiNomorNota" style="display:inline-block; width:21%">Nomor Nota </label><input name="nomorNota" id="isiNomorNota" maxlength="11" type="text" placeholder="Nomor Nota" style="display:inline-block;width:77%" required>
             <button type="submit" id="klikCatat"> Catat. </button>
             <button type="submit" id="klikCari"> Cari..</button>
@@ -131,7 +136,7 @@
             <!-- fQrScan() -->
             <label id="lImgQr" onclick="location.href='#hal3'">Ketik di Nama Barang lalu tunggu QRCode dimuat</label>
             <img id="imgQr" alt="QR Code" src="https://storage.googleapis.com/icongambar/QRcodeIntiCollection.png"; class="cImgQr">
-            <span>versi 11 Juli 2024</span>
+            <span>versi 18 Juli 2024</span>
         </div>
     </section>
     <section id='hal2' style="margin-top:240mm; position:absolute;" class="divHal">
@@ -165,8 +170,9 @@
     //----- cek lebar tinggi karakter dan spasi <!-- <a class="cPindahHal" style="width:4mm; height:10mm; background-color: #02130b2a; border-radius: 0px;">ksijy<br>ksijy<br></a> -->
     //----- opsi: pakai z-index atau opacity <!--onload=function(){document.querySelector('div').setAttribute('style','opacity:1')};
     //----- div > * { vertical-align: middle; } untuk semua isi div?
+    //----- position:fixed z-index:3 untuk daftar isi halaman? hal 1 hal 2 hal 3
 </script>
-<script> 
+<script> //-----------------------------------> next on scan qr set plu harga toko tokoDiKota     Done: bikin di jualbeli.node apiAjax apiCatat apiTampil
     onload=function(){
         document.querySelector('#isiJumlah').focus();
         document.querySelector('#isiNamaBarang').value=decodeURIComponent("{{vQrScanNama}}");
@@ -179,7 +185,7 @@
 
         function fQrBuat(){const vTeksQr='https://api.qrserver.com/v1/create-qr-code/?data='; let vTeksQr2=document.querySelector('#isiNamaBarang').value; if(!vTeksQr2){vTeksQr2='Masukkan Nama'}; document.querySelector('#imgQr').setAttribute('src',vTeksQr+vTeksQr2);}
         let vIconIndex=0,vIconLoop=0;
-        function fStartLoadingIcon(){const vIntLoading =setInterval(function(){fIconLoading()},500);document.querySelector('#imgQr').onload=function(){clearInterval(vIntLoading);document.querySelector('#lImgQr').innerText='QR Code di kanan atas.';document.querySelector('#imgQr').setAttribute('style','width:40%; height:unset; aspect-ratio:1/1;');}};
+        function fStartLoadingIcon(){clearInterval(1);const vIntLoading =setInterval(function(){fIconLoading()},500);document.querySelector('#imgQr').onload=function(){clearInterval(vIntLoading);document.querySelector('#lImgQr').innerText='QR Code di kanan atas.';document.querySelector('#imgQr').setAttribute('style','width:40%; height:unset; aspect-ratio:1/1;');}};
         function fIconLoading(){const vTargetLabel=document.querySelector('#lImgQr'); const vIconLoading=[':','~',' :','_']; vTargetLabel.innerHTML=`Loading...<b style="font-size:20px">${vIconLoading[vIconIndex]}</b>`; vIconIndex++; if (vIconIndex==4){vIconIndex=0,vIconLoop++}}
         function fKlikJualBeli(){
             let vJualBeli='Terjual';
@@ -198,18 +204,38 @@
             document.querySelector('#isiHarga').placeholder='Harga '+vJualBeli;
         };
 
-        function fToggleAjaxNama(){document.querySelectorAll('#alertAjaxNama,#alertAjaxNamaX').forEach(vId=> {vId.classList.toggle('cToggleAjaxNama')})};
+        function fToggleAjaxNama(){document.querySelectorAll('#alertAjaxNama,#alertAjaxNamaX,#alertAjaxNamaDiv').forEach(vId=> {vId.classList.toggle('cToggleAjaxNama')})}; fToggleAjaxNama()
         function fAjaxNama(){
             const vMuatAjaxNamaDi=document.querySelector('#alertAjaxNama')
+            const seenNama={};
             while (vMuatAjaxNamaDi.firstChild){vMuatAjaxNamaDi.firstChild.remove()};
-            JSON.parse(localStorage.getItem('AjaxNama')).filter(vCariNama=>vCariNama.nama.toLowerCase().includes(document.querySelector('#isiNamaBarang').value.toLowerCase())).forEach(vNama=>{
+            JSON.parse(localStorage.getItem('AjaxNama')).filter(vFilterNama=>vFilterNama.nama.toLowerCase().includes(document.querySelector('#isiNamaBarang').value.toLowerCase()))
+            .filter(vFilterNama2=>{const vDupNama=vFilterNama2.nama+vFilterNama2.isiSatuan+vFilterNama2.unitSatuan;  const vSeenNama=seenNama[vDupNama];seenNama[vDupNama]=true;console.log(vDupNama+' vDupNama '+JSON.stringify(vSeenNama)+' vSeenNama '); return!(vSeenNama);})
+            .forEach(vNama=>{
                 const vDivAjaxNama = document.createElement('span');
-                vDivAjaxNama.innerText=vNama.nama;
+                vDivAjaxNama.innerText=vNama.nama+' '+vNama.isiSatuan+' '+vNama.unitSatuan;
                 vDivAjaxNama.setAttribute('class','cSpanAjaxNama');
-                vDivAjaxNama.setAttribute('onclick',`document.querySelector('#isiNamaBarang').value='${vNama.nama}';document.querySelector('#isiSatuan').value='${vNama.isiSatuan}';document.querySelector('#unitSatuan').value='${vNama.unitSatuan}';document.querySelector('#isiPlu').value='${vNama.plu}';document.querySelector('#isiHarga').value='${vNama.harga}'`)
+                vDivAjaxNama.setAttribute('onclick',`document.querySelector('#isiNamaBarang').value='${vNama.nama}';document.querySelector('#isiSatuan').value='${vNama.isiSatuan}';document.querySelector('#unitSatuan').value='${vNama.unitSatuan}';document.querySelector('#isiPlu').value='${vNama.plu}';document.querySelector('#isiHarga').value='${vNama.harga}';fAjaxToko()`)
                 vMuatAjaxNamaDi.appendChild(vDivAjaxNama);
             })
+            document.querySelectorAll('.cToggleAjaxNama').forEach(function(vSemua){vSemua.classList.remove('cToggleAjaxNama');})
             }
+        function fAjaxToko(){
+            const vMuatAjaxTokoDi=document.querySelector('#alertAjaxNama');
+            while (vMuatAjaxTokoDi.firstChild){vMuatAjaxTokoDi.firstChild.remove()};
+            seenToko={};
+            seenTokoDiKota={};
+            vTokoTampil= JSON.parse(localStorage.getItem('AjaxNama')).filter(vFilterToko=>vFilterToko.nama.toLowerCase().includes(document.querySelector('#isiNamaBarang').value.toLowerCase()))
+            .filter(vFilterToko2=>{const vSeenToko=seenToko[vFilterToko2.toko]; seenToko[vFilterToko2.toko]=true; const vSeenTokoDiKota=seenTokoDiKota[vFilterToko2.tokoDiKota];seenTokoDiKota[vFilterToko2.tokoDiKota]=true; return !(vSeenToko&&vSeenTokoDiKota) })
+            vTokoTampil.forEach(vToko2=>{
+                console.log(vToko2)
+                const vDivAjaxToko=document.createElement('span');
+                vDivAjaxToko.innerText=vToko2.toko+' '+vToko2.tokoDiKota; //bisa fAjaxToko() dijadikan satu dengan fAjaxNama() bagian ini vNama.toko lalu .toko diganti pakai variabel vCari yg bisa ganti2 diinput di fAjaxNama(vCari)
+                vDivAjaxToko.setAttribute('class','cSpanAjaxNama');
+                vDivAjaxToko.setAttribute('onclick',`document.querySelector('#isiNamaToko').value='${vToko2.toko}'; document.querySelector('#isiTokoDiKota').value='${vToko2.tokoDiKota}';fToggleAjaxNama();`)
+                vMuatAjaxTokoDi.appendChild(vDivAjaxToko);
+            })
+        };
         const fBacaAwal=async (e)=>{
             //e.preventDefault();
             const vXhr=new XMLHttpRequest();
@@ -217,13 +243,15 @@
             vXhr.send();
             vXhr.onload=function(){if(vXhr.status==200){
                 const vAjaxNama=JSON.parse(vXhr.response);
-                localStorage.setItem('AjaxNama',vXhr.response);
+                localStorage.removeItem('AjaxNama'); console.log('localStorage hapuus')
+                localStorage.setItem('AjaxNama',vXhr.response); 
             }}
-            await vXhr.open('POST','/apiBacaAwal');
-            vXhr.send();
-            vXhr.onload=function(){if(vXhr.status==200){
-                const vMuat1=JSON.parse(vXhr.responseText);
-                const vDivMuat=document.querySelector('#divMuat');
+            const vXhr2=new XMLHttpRequest();
+            await vXhr2.open('POST','/apiBacaAwal');
+            vXhr2.send();
+            vXhr2.onload=function(){if(vXhr2.status==200){
+                const vMuat1=JSON.parse(vXhr2.responseText);
+                const vDivMuat=document.querySelector('#divMuat'); console.log('baca awaaaal')
                 fTampil(vMuat1,vDivMuat); 
             }};
         };
@@ -249,9 +277,7 @@
             }else{alert('tulis hapus, lalu klik')}
         };
         function fTampil(vMuat,vMuatDi){
-            while(vMuatDi.firstChild){
-                        vMuatDi.firstChild.remove()
-                    };
+            while(vMuatDi.firstChild){vMuatDi.firstChild.remove()};
             for (let i=0; i<vMuat.length;i++){
                 const vSpanTgl = document.createElement('span');
                 vMuatTanggal1=String(vMuat[i].tanggal)
@@ -266,7 +292,7 @@
                 vSpanTgl.setAttribute('id','spanTgl');
                 vSpanTgl.setAttribute('onclick',`fTanyaHapus("${vMuat[i]._id}");this.style.backgroundColor='#da4cec';`);
                 const vSpanNama=document.createElement('span');
-                vSpanNama.innerText=vMuat[i].nama; //nama isiSatuan unitSatuan
+                vSpanNama.innerText=vMuat[i].nama+' '+vMuat[i].isiSatuan+' '+vMuat[i].unitSatuan;
                 vSpanNama.setAttribute('class','cSpanHapus');
                 const vSpanJumlah=document.createElement('span');
                 vSpanJumlah.innerHTML=vMuat[i].jumlah+' px.'+'Total : Rp.'+new Intl.NumberFormat('id-id').format(vMuat[i].jumlah*vMuat[i].harga);
@@ -274,7 +300,6 @@
                 vMuatDi.appendChild(vSpanTgl);
                 vMuatDi.appendChild(vSpanNama);
                 vMuatDi.appendChild(vSpanJumlah);
-                // tampil toko kota, jual/beli
             };
         };
     
@@ -312,33 +337,30 @@
             };
             console.log(JSON.stringify(vCatat)+'vCataaaat');
             vCatatTgl={tanggal:vTanggal,...vCatat};
-            vCatatNama=document.querySelector('#isiNamaBarang').value+' '+document.querySelector('#isiSatuan').value+' '+document.querySelector('#unitSatuan').value;
-            vCatatToko=document.querySelector('#isiNamaToko').value+' '+document.querySelector('#isiTokoKota').value;
-                const vIsiLocalStrorage=localStorage.getItem('AjaxNama') ? JSON.parse(localStorage.getItem('AjaxNama')) : [{nama:"yogi"}];
-                console.log(localStorage.getItem('AjaxNama')+' isiiiii localStorage '+JSON.stringify(vIsiLocalStrorage));
-                vIndeksKetemu=vIsiLocalStrorage.findIndex((vAda)=>vAda.nama==vCatatNama);
-                //if(!vIndeksKetemu){vStok=0}else{vStok=vStokSimpanLokal}
-                vStok = !vIndeksKetemu ? 0 : vIsiLocalStrorage[vIndeksKetemu].stok;
+                const vIsiLocalStorage=localStorage.getItem('AjaxNama') ? JSON.parse(localStorage.getItem('AjaxNama')) : [{nama:"yogi"}];
+                console.log(localStorage.getItem('AjaxNama')+' isiiiii localStorage ');
+                vIndeksKetemu=vIsiLocalStorage.findIndex((vAda)=>vAda.nama==document.querySelector('#isiNamaBarang').value && vAda.isiSatuan==document.querySelector('#isiSatuan').value && vAda.unitSatuan==document.querySelector('#unitSatuan').value && vAda.toko==document.querySelector('#isiNamaToko').value && vAda.tokoDiKota==document.querySelector('#isiTokoDiKota').value); //  
+                console.log(vIndeksKetemu);
+                vStok = vIndeksKetemu== -1 ? 0 : vIsiLocalStorage[vIndeksKetemu].stok;
                 vStok=document.querySelector('#spanjb').innerText=='j' ? vStok-Number(document.querySelector('#isiJumlah').value) : document.querySelector('#spanjb').innerText=='b' ? vStok+Number(document.querySelector('#isiJumlah').value) : alert('error ternary stok, kasih tahu yogi');
                 console.log('stok= '+vStok);
-                vAjaxNama={nama:vCatatNama,plu:vForm[3].value,harga:vForm[5].value,stok:vStok,jualbeli:document.querySelector('#spanjb').innerText,toko:vCatatToko};
+                vAjaxNama={nama:vForm[0].value,isiSatuan:vForm[1].value,unitSatuan:vForm[2].value,plu:vForm[3].value,harga:vForm[5].value,stok:vStok,toko:vForm[6].value,tokoDiKota:vForm[7].value};
                 console.log('AjaxNama diisi :'+ JSON.stringify(vAjaxNama));
-                console.log('jualbeli :'+document.querySelector('#spanjb').innerText);
             vCatatString=JSON.stringify({SimpanDiDb:vCatatTgl,AjaxNama:vAjaxNama});
                 if(vIndeksKetemu !== -1){
-                    vIsiLocalStrorage[vIndeksKetemu]=vAjaxNama;
-                    console.log(JSON.stringify(vIsiLocalStrorage[vIndeksKetemu])+' yang diisikan '+JSON.stringify(vIsiLocalStrorage[0]))
+                    vIsiLocalStorage[vIndeksKetemu]=vAjaxNama;
+                    console.log(JSON.stringify(vIsiLocalStorage[vIndeksKetemu])+' yang diisikan '+JSON.stringify(vIsiLocalStorage[0]))
                     console.log('indeks :'+vIndeksKetemu)
                     console.log('kondisi if :'+JSON.stringify(vIndeksKetemu))
                 }else{
-                    vIsiLocalStrorage.push(vAjaxNama)
+                    vIsiLocalStorage.push(vAjaxNama)
                     console.log(localStorage.getItem('AjaxNama')+' dari localStorage kosong atau ga ada match')
                     console.log('kondisi if :'+vIndeksKetemu)
                 }
-            localStorage.setItem('AjaxNama',JSON.stringify(vIsiLocalStrorage))
+            localStorage.setItem('AjaxNama',JSON.stringify(vIsiLocalStorage))
             console.log(vCatatString+'11111111111');
             console.log(Object.keys(localStorage).map((vKey)=>localStorage.getItem(vKey)).join(' ')+'222222222222');
-            //vXhr.send(vCatatString);
+            vXhr.send(vCatatString);
             fBacaAwal();
         };
     

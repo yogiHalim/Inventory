@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cetak QR Barang</title>
+    <style>
+        html, body{height:297mm;width:210mm; margin:0}
+        *{font-size: 12pt; padding:2mm;}
+        #divQrCetak{height:297mm;width:210mm; padding:20mm 10mm; background-color: #ff8c0024;}
+    </style>
+</head>
+<body>
+    <div id="divQrCetak"></div>
+</body>
+<script>
+    const fQrCetak=async(event)=>{
+        const vXhr=new XMLHttpRequest();
+        await vXhr.open('POST','/apiCetakQr');
+        if(document.querySelector('#Hal').value<1){document.querySelector('#Hal').value=1}
+        vXhr.send({skip:`${document.querySelector('#Hal').value*16}`})
+        vXhr.onload=function(){if(vXhr.status==200){fTampil(vMuat1=JSON.parse(vXhr.responseText),vMuatDi1=document.querySelector('#divQrCetak'));}}
+    }
+    fQrCetak();
+    function fTampil(vMuat,vMuatDi){
+        while(vMuatDi.firstChild){vMuatDi.firstChild.remove()};
+        for (let i=0; i<vMuat.length ;i++){
+            const vTeksQr='https://api.qrserver.com/v1/create-qr-code/?data='; 
+            let vTeksQr2=vMuat[i].nama+'%2520'+vMuat[i].isiSatuan+'%2520'+vMuat[i].unitSatuan; //-------> %2520 isiSatuan unitSatuan ----|> tambah isiNamaBarang on scan muat dari ajax
+            const vImgQr=document.createElement('img');
+            vImgQr.setAttribute('src',vTeksQr+vTeksQr2)
+            vImgQr.setAttribute('class','cImgQr')
+            const vDivLabel=document.createElement('div');
+            vDivLabel.setAttribute('innerHTML',vTeks2); // cek %2520 gimana jadi URI
+            vMuatDi.appendChild(vImgQr);
+            vMuatDi.appendChild(vDivLabel);
+        }
+    }
+     
+    if(!vTeksQr2){vTeksQr2='Masukkan Nama'}; document.querySelector('#imgQr').setAttribute('src',vTeksQr+vTeksQr2);
+</script>
+</html>

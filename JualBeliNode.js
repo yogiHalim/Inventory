@@ -29,7 +29,6 @@ async function fUtama(){
     vDaftarDBS.databases.forEach(db => {
       console.log(`- ${db.name}`);
       //console.log(db.name);
-      //vClient.db()
     }); 
     await vClient.db('IntiCollection').listCollections().forEach(vListCol=>{console.log(`collection : ${vListCol.name}`)});
   }
@@ -52,6 +51,9 @@ async function fUtama(){
         case '/apiNota':
           vPath+='nota.html';
           break; 
+        case '/apiCetakQr':
+          vPath+='cetakQr.html';
+          break;
         case '/ubahKodePass':
           vPath+='ubahKodeAkses.html';
           break;
@@ -83,9 +85,9 @@ async function fUtama(){
     // {upsert:true} result.upsertCount ${result.upsertedId}
     async function fBacaAjax(vClient,vCol2,vCariAjax){
       console.log(vCol2,vCariAjax);
-      const vCursor= await vClient.db('IntiCollection').collection('vCol2').find(vCariAjax).toArray();
+      const vCursor= await vClient.db('IntiCollection').collection(vCol2).find(vCariAjax).toArray();
       res.writeHead(200,{'Content-Type':'text-json'});
-      res.write(JSON.stringify(vCursor));
+      res.write(JSON.stringify(vCursor)); console.table(vCursor);console.log('AjaxNamaaaaaaaa')
       res.end();
     }
     async function fBacaNota(vClient,vCariNota,vSkip){
@@ -111,14 +113,15 @@ async function fUtama(){
     };
     async function fCatatDiDB(vClient,vCatat2){
       // await vClient.connect();
-      await vClient.db('IntiCollection').collection('JualBeli').insertOne(vCatat2);
-      console.log('tercatat yay '+vCatat2);
-      //pakainya inseert.upsert:true await vClient.db('IntiCollection').collection('AjaxNama').upsert(nama=vCatat2.nama)
+      await vClient.db('IntiCollection').collection('JualBeli').insertOne(vCatat2); // -->upsert?
+      console.log('tercatat yay ');console.table(vCatat2);
       // await vClient.close();
     }
-    async function fCatatAjax(vClient,vCatat2){
-      await vClient.db('IntiCollection').collection('ColAjaxNama').insertOne(vCatat2);
-      console.log('catat di ajaxnama :'+vCatat2)
+    async function fCatatAjax(vClient,vCari,vCatat2){
+      console.log('catat di ajaxnamaaaaaaaaaaaaaaaa :');console.table(vCatat2);console.log(' vCariiiiiiiiiiiiii ');console.table(vCari);
+      await vClient.db('IntiCollection').collection('ColAjaxNama').updateOne(vCari,{$set:{...vCatat2}},{upsert:true}); //---------------------------------------------------> overwrite kalau ada -----------next bikin ini --cek
+      //await vClient.db('IntiCollection').collection('ColAjaxNama').updateOne({...vCari},{$set:{...vCatat2}},{upsert:true});
+      
     }
     async function fHapusDiDB(vClient,vIdHapus){
       // await vClient.connect();
@@ -134,7 +137,7 @@ async function fUtama(){
       fBaca(vClient,vCari1,vSkip);
     }
     if(req.method==='POST'&& req.url==='/apiAjaxNama'){
-      vCari={nama:{exists:true}};
+      vCari={nama:{$exists:true}};
       vSkip=0;
       vCol2='ColAjaxNama';
       fBacaAjax(vClient,vCol2,vCari,vSkip) //---> karena tampilannya beda dari fBaca(); disini tidak pakai skip2 halaman di bagian res.write nya
@@ -169,7 +172,7 @@ async function fUtama(){
       req.on('end',()=>{
         vCatat2=JSON.parse(vCatat);
         fCatatDiDB(vClient,vCatat2.SimpanDiDb);
-        fCatatAjax(vClient,vCAtat2.AjaxNama);
+        fCatatAjax(vClient,{nama:vCatat2.AjaxNama.nama,isiSatuan:vCatat2.AjaxNama.isiSatuan,unitSatuan:vCatat2.AjaxNama.unitSatuan,toko:vCatat2.AjaxNama.toko,tokoDiKota:vCatat2.AjaxNama.tokoDiKota},vCatat2.AjaxNama);   //--------------------------------> next cek ini dengan isiSatuan unitSatuan
       });
     };
     if (req.method==='POST'&&req.url==='/apiHapus'){

@@ -118,7 +118,8 @@ async function fInputJualBeli(vClient,vData){
   tapi engga error kalau localStorage.getItem('AjaxNama') nya null
   namanya optional chaining operator
 
-9. etc etc
+9. querySelectorAll hasilnya aray jadi harus di forEach 
+  //----- document.querySelectorAll('.cToggleAjaxNama').forEach(function(vSemua){vSemua.classList.remove('cToggleAjaxNama');})
 
 kode cara alternatif.
 coba qrcode1
@@ -241,6 +242,40 @@ vCari yang nama nya ada di localStorage atau di collection mongo
     vIsiLocalStrorage.push(vAjaxNama)
   }
 //findIndex menghasilkan indeks nya document yang sama dimana i=vIsiLocalStrorage.findIndex((vAda)=>vAda.nama==vAjaxNama.nama) --> misalnya hasilnya 3 berarti urutan array keempat
+
+filter tanpa duplikat:
+  cara 1 : taro di const new Set()
+  cara 2 :  const seen={};
+            const vMuatAjaxTokoDi=document.querySelector('#alertAjaxNama');
+            while (vMuatAjaxTokoDi.firstChild){vMuatAjaxTokoDi.firstChild.remove()};
+            const vTokoTampil = new Set()
+            JSON.parse(localStorage.getItem('AjaxNama')).filter(vCariToko=>vCariToko.nama.toLowerCase().includes(document.querySelector('#isiNamaBarang').value.toLowerCase()))
+            .filter(vFilterNama=>{!seen[vFilterNama]&&(seen[vFilterNama]=true)})
+            .filter(vFilterNama=>{return seen[vFilterNama]?false:seen[vFilterNama]=true})
+            *belum paham opsi filter 1 dan opsi filter 2 ini logic nya gimana tapi hasilnya cuma muncul 1, walaupun unique nya beberapa tetep muncul 1 aja
+            
+            cara seen{} yang jalan; harus disangkutkan ke variabel vSeenToko dan vSeenTokoDiKota
+            .filter(vFilterNama=>{const vSeenToko=seenToko[vFilterNama.toko]; seenToko[vFilterNama.toko]=true; const vSeenTokoDiKota=seenTokoDiKota[vFilterNama.tokoDiKota];seenTokoDiKota[vFilterNama.tokoDiKota]=true; return !(vSeenToko&&vSeenTokoDiKota) })
+
+  cara taro di set() hanya bisa diisi bukan object. Ini kode yang dicoba2 tapi belum jalan.
+              //const vToko = new Set()
+              //const vTokoDiKota = new Set()
+              vTokoTampil= JSON.parse(localStorage.getItem('AjaxNama')).filter(vCariToko=>vCariToko.nama.toLowerCase().includes(document.querySelector('#isiNamaBarang').value.toLowerCase()))
+                  .forEach(vTampilToko=>{vTokoTampil2={toko:vTampilToko.toko,tokoDiKota:vTampilToko.tokoDiKota};vTokoTampil={...vTokoTampil,...vTokoTampil2};
+                console.log('vTokoTampil '+JSON.stringify(vTokoTampil));
+                console.log('vTokoTampil2 '+JSON.stringify( vTokoTampil2));
+                })
+                
+                vTokoTampil2.forEach(vTokoTampil3=>vTokoTampil.add(vTokoTampil3));
+                /*
+                .forEach(vTampilToko=>{ vToko.add(vTampilToko.toko);vTokoDiKota.add(vTampilToko.tokoDiKota);*//*vTokoTampil2.push({toko:vToko[i],tokoDiKota:vTokoDiKota[i]})*//*});
+                vTokoTampil=Array.from(vToko).map((toko,i)=>({toko,tokoDiKota:Array.from(vTokoDiKota)[i]})) //variabel toko jadi nama key di key:value pair lucu ik
+                */
+                merge dulu baru di set ---- merge di array; ga bisa karena set hanya bisa unique primitive value ga bisa object
+                merge dulu supaya engga di filter unique toko, kota nya engga muncul karena diitung sekali nama toko
+                {toko:Array.from(vToko),tokoDiKota:Array.from(vTokoDiKota)}
+
+
 
 insert ke text
 
