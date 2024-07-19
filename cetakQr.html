@@ -15,14 +15,14 @@
 </head>
 <body>
     <div id="divQrCetak"></div>
-    <span>Halaman :</span><input id="Hal" value="1"/><span onclick="document.querySelector('#Hal').value--;this.nextSibling.nextSibling.innerHTML='Go'">Sebelum</span><span onclick="document.querySelector('#Hal').value++;this.nextSibling.innerHTML='Go'">Sesudah</span><span onclick="fQrCetak();this.innerHTML='Jalaan'">Go</span>
+    <span>Halaman :</span><input id="Hal" value="1"/><span onclick="document.querySelector('#Hal').value--;this.nextSibling.nextSibling.innerHTML='Go'">Sebelum</span><span onclick="document.querySelector('#Hal').value++;this.nextSibling.innerHTML='Go'">Sesudah</span><span onclick="fQrCetak();this.innerHTML='Jalaan'">Go</span><br><a href="/">Halaman Depan</a>
 </body>
 <script>
     const fQrCetak=async (event)=>{
         const vXhr=new XMLHttpRequest();
         await vXhr.open('POST','/apiCetakQr');
         if(document.querySelector('#Hal').value<1){document.querySelector('#Hal').value=1}
-        vXhr.send({skip:`${(document.querySelector('#Hal').value-1)*16}`})
+        vXhr.send(JSON.stringify({skip:`${(document.querySelector('#Hal').value-1)*25}`}))
         vXhr.onload=function(){if(vXhr.status==200){fTampil(vMuat1=JSON.parse(vXhr.responseText),vMuatDi1=document.querySelector('#divQrCetak'));}}
     }
     fQrCetak();

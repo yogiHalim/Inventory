@@ -84,7 +84,6 @@ async function fUtama(){
     // menit 28:00 ${result.matchedCount} ${result.modifiedCount} 
     // {upsert:true} result.upsertCount ${result.upsertedId}
     async function fBacaAjax(vClient,vCol2,vCariAjax,vSkip,vLimit){
-      console.log(vCol2+vCariAjax+' skip: '+vSkip+' limit: '+vLimit);
       const vCursor= await vClient.db('IntiCollection').collection(vCol2).find(vCariAjax).skip(vSkip).limit(vLimit).toArray();
       res.writeHead(200,{'Content-Type':'text-json'});
       res.write(JSON.stringify(vCursor)); console.table(vCursor);console.log('AjaxNamaaaaaaaa')
@@ -142,13 +141,15 @@ async function fUtama(){
       vCol2='colAjaxNama';
       fBacaAjax(vClient,vCol2,vCari,vSkip,vLimit) //---> karena tampilannya beda dari fBaca(); disini tidak pakai skip2 halaman di bagian res.write nya
     };
-    //-----------------------> kembaliin colAjaxNama huruf c kecil
-    if(req.method=='POST' && req.url==='/apiCetakQr'){let vCariQrNama='';req.on('data',vChunk=>{vCariQrNama+=vChunk.toString();req.on('end',()=>{vSkip=vCariQrNama.skip;vLimit=25;fBacaAjax(vClient,'colAjaxNama',{nama:{$exists:true}},vSkip,vLimit)})})}
+    if(req.method=='POST' && req.url==='/apiCetakQr'){
+      let vCariQrNama='';req.on('data',vChunk=>{vCariQrNama+=vChunk.toString();
+      req.on('end',()=>{vSkip=Number(JSON.parse(vCariQrNama).skip);vLimit=25;fBacaAjax(vClient,'colAjaxNama',{nama:{$exists:true}},vSkip,vLimit)})})
+    };
     if (req.method=='POST' && req.url=='/apiCetakNota'){
       let vCariNota ='';
       req.on('data',chunk=>{vCariNota+=chunk.toString();console.log(chunk.toString(),'chunk inii')});
       req.on('end',()=>{vCariNota2=JSON.parse(vCariNota); console.log(vCariNota2,'sebelum if'); if(vCariNota2.nomorNota=='0'){console.log('kosong'); vCariNota2.nomorNota={ $exists: true }} fBacaNota(vClient,{nomorNota:vCariNota2.nomorNota},Number(vCariNota2.skip));});
-    }
+    };
     if (req.method==='POST' && req.url==='/apiTampil'){
       let vCari = '';
         req.on('data', chunk => {
