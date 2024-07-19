@@ -28,7 +28,7 @@ async function fUtama(){
     const vDaftarDBS = await vClient.db().admin().listDatabases();
     vDaftarDBS.databases.forEach(db => {
       console.log(`- ${db.name}`);
-      //console.log(db.name);
+      //console.log(db.name); view/command pallete/ mongoDB launch mongoDB shell trus db.ColAjaxNama.renameCollection("colAjaxNama")
     }); 
     await vClient.db('IntiCollection').listCollections().forEach(vListCol=>{console.log(`collection : ${vListCol.name}`)});
   }
@@ -143,7 +143,7 @@ async function fUtama(){
       fBacaAjax(vClient,vCol2,vCari,vSkip,vLimit) //---> karena tampilannya beda dari fBaca(); disini tidak pakai skip2 halaman di bagian res.write nya
     };
     //-----------------------> kembaliin colAjaxNama huruf c kecil
-    if(req.method=='POST' && req.url==='/apiCetakQr'){let vCariQrNama='';req.on('data',vChunk=>{vCariQrNama+=vChunk.toString();req.on('end',()=>{vSkip=vCariQrNama.skip;vLimit=25;fBacaAjax(vClient,'ColAjaxNama',{nama:{$exists:true}},vSkip,vLimit)})})}
+    if(req.method=='POST' && req.url==='/apiCetakQr'){let vCariQrNama='';req.on('data',vChunk=>{vCariQrNama+=vChunk.toString();req.on('end',()=>{vSkip=vCariQrNama.skip;vLimit=25;fBacaAjax(vClient,'colAjaxNama',{nama:{$exists:true}},vSkip,vLimit)})})}
     if (req.method=='POST' && req.url=='/apiCetakNota'){
       let vCariNota ='';
       req.on('data',chunk=>{vCariNota+=chunk.toString();console.log(chunk.toString(),'chunk inii')});
