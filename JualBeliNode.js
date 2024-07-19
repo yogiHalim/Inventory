@@ -83,9 +83,9 @@ async function fUtama(){
     // https://www.youtube.com/watch?v=fbYExfeFsI0&t=138s 
     // menit 28:00 ${result.matchedCount} ${result.modifiedCount} 
     // {upsert:true} result.upsertCount ${result.upsertedId}
-    async function fBacaAjax(vClient,vCol2,vCariAjax){
-      console.log(vCol2,vCariAjax);
-      const vCursor= await vClient.db('IntiCollection').collection(vCol2).find(vCariAjax).toArray();
+    async function fBacaAjax(vClient,vCol2,vCariAjax,vSkip,vLimit){
+      console.log(vCol2+vCariAjax+' skip: '+vSkip+' limit: '+vLimit);
+      const vCursor= await vClient.db('IntiCollection').collection(vCol2).find(vCariAjax).skip(vSkip).limit(vLimit).toArray();
       res.writeHead(200,{'Content-Type':'text-json'});
       res.write(JSON.stringify(vCursor)); console.table(vCursor);console.log('AjaxNamaaaaaaaa')
       res.end();
@@ -119,8 +119,8 @@ async function fUtama(){
     }
     async function fCatatAjax(vClient,vCari,vCatat2){
       console.log('catat di ajaxnamaaaaaaaaaaaaaaaa :');console.table(vCatat2);console.log(' vCariiiiiiiiiiiiii ');console.table(vCari);
-      await vClient.db('IntiCollection').collection('ColAjaxNama').updateOne(vCari,{$set:{...vCatat2}},{upsert:true}); //---------------------------------------------------> overwrite kalau ada -----------next bikin ini --cek
-      //await vClient.db('IntiCollection').collection('ColAjaxNama').updateOne({...vCari},{$set:{...vCatat2}},{upsert:true});
+      await vClient.db('IntiCollection').collection('colAjaxNama').updateOne(vCari,{$set:{...vCatat2}},{upsert:true}); //---------------------------------------------------> overwrite kalau ada -----------next bikin ini --cek
+      //await vClient.db('IntiCollection').collection('colAjaxNama').updateOne({...vCari},{$set:{...vCatat2}},{upsert:true});
       
     }
     async function fHapusDiDB(vClient,vIdHapus){
@@ -138,15 +138,15 @@ async function fUtama(){
     }
     if(req.method==='POST'&& req.url==='/apiAjaxNama'){
       vCari={nama:{$exists:true}};
-      vSkip=0;
-      vCol2='ColAjaxNama';
-      fBacaAjax(vClient,vCol2,vCari,vSkip) //---> karena tampilannya beda dari fBaca(); disini tidak pakai skip2 halaman di bagian res.write nya
+      vSkip=0;vLimit=0;
+      vCol2='colAjaxNama';
+      fBacaAjax(vClient,vCol2,vCari,vSkip,vLimit) //---> karena tampilannya beda dari fBaca(); disini tidak pakai skip2 halaman di bagian res.write nya
     };
+    //-----------------------> kembaliin colAjaxNama huruf c kecil
+    if(req.method=='POST' && req.url==='/apiCetakQr'){let vCariQrNama='';req.on('data',vChunk=>{vCariQrNama+=vChunk.toString();req.on('end',()=>{vSkip=vCariQrNama.skip;vLimit=25;fBacaAjax(vClient,'ColAjaxNama',{nama:{$exists:true}},vSkip,vLimit)})})}
     if (req.method=='POST' && req.url=='/apiCetakNota'){
       let vCariNota ='';
       req.on('data',chunk=>{vCariNota+=chunk.toString();console.log(chunk.toString(),'chunk inii')});
-//      req.on('end',()=>{fBacaNota(vClient,{nomorNota:vCariNota})});
-      
       req.on('end',()=>{vCariNota2=JSON.parse(vCariNota); console.log(vCariNota2,'sebelum if'); if(vCariNota2.nomorNota=='0'){console.log('kosong'); vCariNota2.nomorNota={ $exists: true }} fBacaNota(vClient,{nomorNota:vCariNota2.nomorNota},Number(vCariNota2.skip));});
     }
     if (req.method==='POST' && req.url==='/apiTampil'){

@@ -3,40 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/x-icon" href="https://storage.googleapis.com/icongambar/icon-green-y.png"/>
     <title>Cetak QR Barang</title>
     <style>
         html, body{height:297mm;width:210mm; margin:0}
         *{font-size: 12pt; padding:2mm;}
-        #divQrCetak{height:297mm;width:210mm; padding:20mm 10mm; background-color: #ff8c0024;}
+        #divQrCetak{height:297mm;width:210mm; padding:20mm 10mm; background-color: #ff8c0024;display:grid; grid-auto-flow: row; grid-template: repeat(5,1fr) / repeat(5,1fr); } /*column-gap: 10px; repeat(2,1fr); grid-template-columns: repeat(3,1fr); */
+        .cLabel{width:90%; height: 3ch; }
+        .cImgQr{width:90%; }
     </style>
 </head>
 <body>
     <div id="divQrCetak"></div>
+    <span>Halaman :</span><input id="Hal" value="1"/><span onclick="document.querySelector('#Hal').value--;this.nextSibling.nextSibling.innerHTML='Go'">Sebelum</span><span onclick="document.querySelector('#Hal').value++;this.nextSibling.innerHTML='Go'">Sesudah</span><span onclick="fQrCetak();this.innerHTML='Jalaan'">Go</span>
 </body>
 <script>
-    const fQrCetak=async(event)=>{
+    const fQrCetak=async (event)=>{
         const vXhr=new XMLHttpRequest();
         await vXhr.open('POST','/apiCetakQr');
         if(document.querySelector('#Hal').value<1){document.querySelector('#Hal').value=1}
-        vXhr.send({skip:`${document.querySelector('#Hal').value*16}`})
+        vXhr.send({skip:`${(document.querySelector('#Hal').value-1)*16}`})
         vXhr.onload=function(){if(vXhr.status==200){fTampil(vMuat1=JSON.parse(vXhr.responseText),vMuatDi1=document.querySelector('#divQrCetak'));}}
     }
     fQrCetak();
     function fTampil(vMuat,vMuatDi){
         while(vMuatDi.firstChild){vMuatDi.firstChild.remove()};
-        for (let i=0; i<vMuat.length ;i++){
-            const vTeksQr='https://api.qrserver.com/v1/create-qr-code/?data='; 
-            let vTeksQr2=vMuat[i].nama+'%2520'+vMuat[i].isiSatuan+'%2520'+vMuat[i].unitSatuan; //-------> %2520 isiSatuan unitSatuan ----|> tambah isiNamaBarang on scan muat dari ajax
+        for (let i=0; i<vMuat.length ;i++){ //https://api.qrserver.com/v1/create-qr-code/?data=https://sonic-stratum-427310-p3.et.r.appspot.com/?%26nama=Kerupuk%2520Uker%26isiSatuan=5%26unitSatuan=kg
+            const vDivTumpuk=document.createElement('div');
+            const vNama=vMuat[i].nama; const vIsiSatuan=vMuat[i].isiSatuan; const vUnitSatuan=vMuat[i].unitSatuan;
+            const vTeksQr='https://api.qrserver.com/v1/create-qr-code/?data=https://inticollection.azurewebsites.net/?%26nama='+encodeURIComponent(encodeURIComponent(vNama))+'%26isiSatuan='+vIsiSatuan+'%26unitSatuan='+vUnitSatuan; 
             const vImgQr=document.createElement('img');
-            vImgQr.setAttribute('src',vTeksQr+vTeksQr2)
+            vImgQr.setAttribute('src',vTeksQr)
             vImgQr.setAttribute('class','cImgQr')
             const vDivLabel=document.createElement('div');
-            vDivLabel.setAttribute('innerHTML',vTeks2); // cek %2520 gimana jadi URI
-            vMuatDi.appendChild(vImgQr);
-            vMuatDi.appendChild(vDivLabel);
+            vDivLabel.innerHTML=vNama+' '+vIsiSatuan+' '+vUnitSatuan;//decodeURIComponent(vTeksQr2); // cek %2520 gimana jadi URI Sarung Fatwa%25201%2520kodi
+            vDivLabel.setAttribute('class','cLabel');
+            vMuatDi.appendChild(vDivTumpuk);
+            vDivTumpuk.appendChild(vImgQr);
+            vDivTumpuk.appendChild(vDivLabel);
         }
     }
      
-    if(!vTeksQr2){vTeksQr2='Masukkan Nama'}; document.querySelector('#imgQr').setAttribute('src',vTeksQr+vTeksQr2);
 </script>
 </html>
