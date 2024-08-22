@@ -14,7 +14,7 @@
 .gitignore
 .deployment
 .hintrc
-azd next-steps
+azd next-steps.md
 azure.yaml
 .azure/
 .git/

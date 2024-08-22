@@ -58,9 +58,7 @@
         #alertHapus span{
             padding-left: 5mm; margin:0; height:18px; padding:2px 0px; position:relative;left:3mm;
         }
-        .tombolKecil{
-            width:max-content;
-        }
+        
         button[type="submit"]{
             margin:10px 0 0 2mm;
             border:chartreuse;
@@ -74,10 +72,15 @@
         background-color: #45a049;
         font-weight: bolder;
         }
-        
+        button:disabled{cursor:not-allowed; color: #ccc;}
+        .tombolKecil{
+            width:max-content;
+        }
+        button.cKlik2{width:calc(49% - 2mm)}
+         
         input, select {
         width: calc(100% - 2mm); height:35px;
-        margin: 8px 0 0 1mm;
+        margin: 8px 0 1mm 1mm;
         padding:0 0.8em;
         border: 1px solid #ccc;
         border-bottom: #34d044;
@@ -89,10 +92,9 @@
         opacity: 0;
         }
         section{width:100%}
+        label,p{padding-left: 1mm;}
 
         /* div{opacity:0}; width:unset;*/
-
-        
     </style>
   
 </head>
@@ -106,20 +108,22 @@
             </div>
             <div id="alertAjaxNamaDiv" style="height:225px;padding:0;">
                 <span style="display:inline-block; width:70mm; z-index: 4;"></span>
-                <span onclick="fToggleAjaxNama()" style="position:fixed; z-index: 4; margin:0 1ch auto auto; width: 2ch">X</span>
-                <div id="alertAjaxNama" style="z-index:3;height:225px;"  onblur="fToggleAjaxNama();"><span> Ketik Nama Barang, daftar akan muncul disini</span></div></div>
+                <span id="xAjaxNama" tabindex="0" onclick="fToggleAjaxNama(event)" onkeydown="fToggleAjaxNama(event)" style="position:fixed; z-index: 4; margin:0 1ch auto auto; width: 2ch">X</span>
+                <div id="alertAjaxNama" style="z-index:3;height:225px;"  onblur="fToggleAjaxNama(event);"><span> Ketik Nama Barang, daftar akan muncul disini</span></div>
+            </div>
             <button type="button" id="klikJualBeli" onclick="fKlikJualBeli();" class="klik teks" style="background-color: #acffb5a9;color:#5d009b; margin-bottom:20px;">Saat Ini Mencatat Jual</button>
                 <p id="pTgl">Tanggal</p>
+                <input type="datetime-local" id="isiTgl">
             <form  method="POST" action="/" id='idForm' style="width:calc(100% - 2mm);">
                     <label id="lNama" for="isiNamaBarang" >Nama Barang Terjual</label> <span id="spanjb" style="opacity:0">j</span>
-                    <input name="nama" id="isiNamaBarang" maxlength="27"  type="text" class="teks" onfocusout='fStartLoadingIcon();fQrBuat();' onkeyup='fAjaxNama();' onclick='fToggleAjaxNama();'; placeholder="Nama Barang Terjual" required />
+                    <input name="nama" id="isiNamaBarang" maxlength="27"  type="text" class="teks" onfocusout='fStartLoadingIcon();fQrBuat();document.querySelector("#xAjaxNama").focus()' onkeyup='fAjaxNama();' onclick='fToggleAjaxNama(event);'; placeholder="Nama Barang Terjual"  />
                     <label for="isiSatuan" style="margin-right:37%; padding-top: 2px;">satuan</label><label for="isiPlu">PLU<br></label>
-                    <input name="isiSatuan" id="isiSatuan" maxlength="5" type="text" style="width:23%; display:inline-block;" onkeyup="fRibuan()" required>
-                    <input name="unitSatuan" id="unitSatuan" maxlength="7" type="text" style="width:23%" placeholder="Kilogram" required>
+                    <input name="isiSatuan" id="isiSatuan" maxlength="5" type="text" style="width:23%; display:inline-block;" onkeyup="fRibuan()" >
+                    <input name="unitSatuan" id="unitSatuan" maxlength="7" type="text" style="width:23%" placeholder="Kilogram" >
                 <input name="plu" id="isiPlu" maxlength="18" type="text" style="width:47%">
                 <label id='lJumlah'for="isiJumlah" class="cIsi2">Jumlah</label><label id="lHarga" for="isiHarga">Harga Jual</label>
-                <input name="jumlah" id="isiJumlah" onkeypress="return event.target.value.length <= 9" type="number" class="cIsi2" placeholder="Jumlah Dijual" class="cIsi2" onkeyup="fTotal(); fRibuan();"  required/>
-                <input name="harga" id="isiHarga" onkeypress="return event.target.value.length <= 9" type="number" list="seringHarga" class="cIsi2" onkeyup="fTotal(); fRibuan();"  required>
+                <input name="jumlah" id="isiJumlah" onkeypress="return event.target.value.length <= 9" type="number" class="cIsi2" placeholder="Jumlah Dijual" class="cIsi2" onkeyup="fTotal(); fRibuan();"  />
+                <input name="harga" id="isiHarga" onkeypress="return event.target.value.length <= 9" type="number" list="seringHarga" class="cIsi2" onkeyup="fTotal(); fRibuan();"  >
                     <datalist id="seringHarga">
                         <option value="">belum diisi</option>
                         <option value="20000"></option>
@@ -127,22 +131,27 @@
                 <label for="isiNamaToko" id="lToko" class="cIsi2">Toko Jual</label><label for="isiTokoDiKota" class="cIsi2">Kota</label>
                 <input name="toko" id="isiNamaToko" maxlength="27" type="text" placeholder="Toko yang disuplai" class="cIsi2">
                 <input name="tokoDiKota" id="isiTokoDiKota" maxlength="11" type="text" placeholder="Kota" class="cIsi2">
-                <label for="isiNomorNota" style="display:inline-block; width:21%">Nomor Nota </label><input name="nomorNota" id="isiNomorNota" maxlength="11" type="text" placeholder="Nomor Nota" style="display:inline-block;width:77%" required>
+                <label for="isiNomorNota" style="display:inline-block; width:21%">Nomor Nota </label><input name="nomorNota" id="isiNomorNota" maxlength="11" type="text" placeholder="Nomor Nota" style="display:inline-block;width:77%" >
             <button type="submit" id="klikCatat"> Catat. </button>
-            <button type="submit" id="klikCari"> Cari..</button>
+            <button type="submit" id="klikCari" class="cKlik2"> Cari..</button> <button type="submit" id="klikSisipkan" class="cKlik2" disabled> Sisipkan &#8595</button>
             </form>
             <p id="pTotal">Total</p>
-            <a href="/apiNota">Cetak Nota</a> <a href="/apiCetakQr">Cetak QR</a><div style="width:100%;"><span class="cSpanPindahHal"></span><a href="#hal2" class="cPindahHal">Lihat Transaksi <br><br></a></div>
-            <!-- fQrScan() -->
-            <label id="lImgQr" onclick="location.href='#hal3'">Ketik di Nama Barang lalu tunggu QRCode dimuat</label>
-            <img id="imgQr" alt="QR Code" src="https://storage.googleapis.com/icongambar/QRcodeIntiCollection.png"; class="cImgQr">
-            <span>versi 18 Juli 2024 cetak QR</span>
+                <a href="/apiNota">Cetak Nota</a> <a href="/apiCetakQr">Cetak QR</a><div style="width:100%;"><span class="cSpanPindahHal"></span><a href="#hal2" class="cPindahHal">Lihat Transaksi <br><br></a></div> 
+                <!-- fQrScan() -->
+                <label id="lImgQr" onclick="location.href='#hal3'">Ketik di Nama Barang lalu tunggu QRCode dimuat</label>
+                <img id="imgQr" alt="QR Code" src="https://storage.googleapis.com/icongambar/QRcodeIntiCollection.png"; class="cImgQr">
+                <span>versi 22 Agustus 2024 sisip yang ketinggalan ketik</span>
+            <section style="visibility: hidden;">hidden
+                <label id="vlLokasiSisip" style="visibility: hidden;">00000000 0000 00000 tanggal</label>
+                <label id="vlHalTampil" >1</label>  <!--bikin label _id hidden. bikin tombol sisipkan di bawah disabled. Enabled on click cari, disabled on click catat. /apiCatatSisip /apiCariUbah /apiCatatUbah-->
+                <label id="vlCatatSisip">catat</label>
+            </section>
         </div>
     </section>
     <section id='hal2' style="margin-top:240mm; position:absolute;" class="divHal">
         <div style="width:100%;"><span class="cSpanPindahHal"></span><label onclick="location.href='#JualBeli'" id="lHal2" class="cPindahHal">Kembali ke Atas<br></label></div>
-        <button style="width:34%" onclick="document.querySelector('#isiHalTampil').value--;fCari()">Sebelumnya</button>
-        <button style="width:34%" onclick="document.querySelector('#isiHalTampil').value++;fCari()">Berikutnya</button>
+        <button style="width:34%" onclick="document.querySelector('#vlHalTampil').textContent=1 ; vSblm=document.querySelector('#isiHalTampil'); vSblm.value--;if (vSblm.value<=0){vSblm.value=1}; fCari()">Sebelumnya</button>
+        <button style="width:34%" onclick="if(document.querySelector('#vlHalTampil').textContent > 0){document.querySelector('#isiHalTampil').value++;fCari();} ">Berikutnya</button>
         <label for="isiHalTampil">Halaman</label><input id="isiHalTampil" list="halTampil" value="1" maxlength="2" style="width:3em" type="text"> <datalist><option value="1"></option></datalist>
         <div id="divMuat" style="padding-bottom: 50mm; padding-left: 0mm;" class="divHal">
         </div>
@@ -156,7 +165,11 @@
     </section>
     
 </body>
-<!-- /* ubah warna dengan variabel onklik muat warna dari filetxt*/
+<!-- 
+1. rapikan fCari() sisip
+2. buat ganti warna 
+3. buat ulang hal1
+/* ubah warna dengan variabel onklik muat warna dari filetxt*/
 /* document.documentElement.style.setProperty('--primary-color', '#00FFFF'); */ -->
 
 <script>
@@ -172,7 +185,8 @@
     //----- div > * { vertical-align: middle; } untuk semua isi div?
     //----- position:fixed z-index:3 untuk daftar isi halaman? hal 1 hal 2 hal 3
 </script>
-<script> //-----------------------------------> next on scan qr set plu harga toko tokoDiKota     Done: bikin di jualbeli.node apiAjax apiCatat apiTampil
+<script>
+    if (document.querySelector('#klikSisipkan').disabled){console.log('tombol sisipkan disabled')} else {console.log('tombol sisipkan enabled')};
     onload=function(){
         document.querySelector('#isiJumlah').focus();
         document.querySelector('#isiNamaBarang').value=decodeURIComponent("{{vQrScanNama}}");
@@ -180,7 +194,8 @@
         document.querySelector('#unitSatuan').value=decodeURIComponent("{{vQrScanUnitSatuan}}");
     }
         document.querySelector('#pTgl').innerHTML=new Date().toLocaleString("id-id",{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'numeric'}).replace('pukul','pk.');
-        vTanggal=new Date(Date.now()+25200000).toISOString().replace(/[^\d]/g,'').slice(0,12); //to isostring + 7 jam replace ./; //hati-hati awalan nol number dihilangkan? untung disini awalan 2024 bukan tanggal
+        vTanggal=new Date(Date.now()+25200000).toISOString().replace(/[^\d]/g,'').slice(0,17); //to isostring + 7 jam replace ./; //hati-hati awalan nol number dihilangkan? untung disini awalan 2024 bukan tanggal //ga jadi slice 12 (sampai menit) karena perlu sisipkan yang kelewat ketik, pakai tanggal+1
+        document.querySelector('#isiTgl').addEventListener('input',function(event){document.querySelector('#isiTgl').textContent=event.target.value})
         function fTotal(){document.querySelector('#pTotal').innerHTML='Total = Rp.'+new Intl.NumberFormat('id-id').format(document.querySelector('#isiJumlah').value*document.querySelector('#isiHarga').value);console.log('haiiii pTotal')};
 
         function fQrBuat(){const vTeksQr='https://api.qrserver.com/v1/create-qr-code/?data='; let vTeksQr2=document.querySelector('#isiNamaBarang').value; if(!vTeksQr2){vTeksQr2='Masukkan Nama'}; document.querySelector('#imgQr').setAttribute('src',vTeksQr+vTeksQr2);}
@@ -204,18 +219,19 @@
             document.querySelector('#isiHarga').placeholder='Harga '+vJualBeli;
         };
 
-        function fToggleAjaxNama(){document.querySelectorAll('#alertAjaxNama,#alertAjaxNamaX,#alertAjaxNamaDiv').forEach(vId=> {vId.classList.toggle('cToggleAjaxNama')})}; fToggleAjaxNama()
+        function fToggleAjaxNama(event){event.preventDefault();document.querySelectorAll('#alertAjaxNama,#alertAjaxNamaX,#alertAjaxNamaDiv').forEach(vId=> {vId.classList.toggle('cToggleAjaxNama')})}; fToggleAjaxNama(event)
         function fAjaxNama(){
             const vMuatAjaxNamaDi=document.querySelector('#alertAjaxNama')
             const seenNama={};
             while (vMuatAjaxNamaDi.firstChild){vMuatAjaxNamaDi.firstChild.remove()};
             JSON.parse(localStorage.getItem('AjaxNama')).filter(vFilterNama=>vFilterNama.nama.toLowerCase().includes(document.querySelector('#isiNamaBarang').value.toLowerCase()))
             .filter(vFilterNama2=>{const vDupNama=vFilterNama2.nama+vFilterNama2.isiSatuan+vFilterNama2.unitSatuan;  const vSeenNama=seenNama[vDupNama];seenNama[vDupNama]=true;console.log(vDupNama+' vDupNama '+JSON.stringify(vSeenNama)+' vSeenNama '); return!(vSeenNama);})
+            .slice(0,8)
             .forEach(vNama=>{
                 const vDivAjaxNama = document.createElement('span');
                 vDivAjaxNama.innerText=vNama.nama+' '+vNama.isiSatuan+' '+vNama.unitSatuan;
                 vDivAjaxNama.setAttribute('class','cSpanAjaxNama');
-                vDivAjaxNama.setAttribute('onclick',`document.querySelector('#isiNamaBarang').value='${vNama.nama}';document.querySelector('#isiSatuan').value='${vNama.isiSatuan}';document.querySelector('#unitSatuan').value='${vNama.unitSatuan}';document.querySelector('#isiPlu').value='${vNama.plu}';document.querySelector('#isiHarga').value='${vNama.harga}';fAjaxToko()`)
+                vDivAjaxNama.setAttribute('onclick',`document.querySelector('#isiNamaBarang').value='${vNama.nama}';document.querySelector('#isiSatuan').value='${vNama.isiSatuan}';document.querySelector('#unitSatuan').value='${vNama.unitSatuan}';document.querySelector('#isiPlu').value='klik Toko dulu';document.querySelector('#isiHarga').value='${vNama.harga}';fAjaxToko()`)
                 vMuatAjaxNamaDi.appendChild(vDivAjaxNama);
             })
             document.querySelectorAll('.cToggleAjaxNama').forEach(function(vSemua){vSemua.classList.remove('cToggleAjaxNama');})
@@ -232,7 +248,7 @@
                 const vDivAjaxToko=document.createElement('span');
                 vDivAjaxToko.innerText=vToko2.toko+' '+vToko2.tokoDiKota; //bisa fAjaxToko() dijadikan satu dengan fAjaxNama() bagian ini vNama.toko lalu .toko diganti pakai variabel vCari yg bisa ganti2 diinput di fAjaxNama(vCari)
                 vDivAjaxToko.setAttribute('class','cSpanAjaxNama');
-                vDivAjaxToko.setAttribute('onclick',`document.querySelector('#isiNamaToko').value='${vToko2.toko}'; document.querySelector('#isiTokoDiKota').value='${vToko2.tokoDiKota}';fToggleAjaxNama();`)
+                vDivAjaxToko.setAttribute('onclick',`document.querySelector('#isiPlu').value='${vToko2.plu}'; document.querySelector('#isiNamaToko').value='${vToko2.toko}'; document.querySelector('#isiTokoDiKota').value='${vToko2.tokoDiKota}';fToggleAjaxNama(event);`)
                 vMuatAjaxTokoDi.appendChild(vDivAjaxToko);
             })
         };
@@ -300,25 +316,25 @@
                 vMuatDi.appendChild(vSpanTgl);
                 vMuatDi.appendChild(vSpanNama);
                 vMuatDi.appendChild(vSpanJumlah);
+                console.log(i+' '+vMuat[i].nama+' jumlah: '+vMuat[i].jumlah);
+                if(vMuat[i].nama=='  Akhir Data'){document.querySelector('#vlHalTampil').textContent=0;}
             };
         };
     
-        const fCari=async (e)=>{;
-            location.href='#hal2';
+        const fCari=async (e)=>{; //next pop-up pTgl dan tampil di #idForm
+            //location.href='#hal2'; ------> ndak usah
             const vXhr = new XMLHttpRequest();
             vXhr.open("POST","/apiTampil");
-            vXhr.setRequestHeader('Content-type','text/plain');
-            //***to do2: bikin div isi txtbox tanggal dan txtbox nama, vXhr.send(vCariTanggal, vCariNama)
-            //kalau sudah jadi nama barang dari collection nama, hapus vCariNama, langsung input isinya ke vCari=JSON.stringify(nama:document.querySelector('#isiNamaBarang').value+' '+document.querySelector('#isiSatuan').value+' '+document.querySelector('#unitSatuan').value)
-            //cari dari tanggal, nama barang, toko
+            vXhr.setRequestHeader('Content-type','text/plain'); //-----------> ndak usah
             if (document.querySelector('#isiSatuan').value){vCariNama=document.querySelector('#isiNamaBarang').value+' '+document.querySelector('#isiSatuan').value+' '+document.querySelector('#unitSatuan').value}
             else{vCariNama=document.querySelector('#isiNamaBarang').value}
-            let vCari=JSON.stringify({nama:vCariNama,halTampil:document.querySelector('#isiHalTampil').value});
+            let vCari=JSON.stringify({nama:vCariNama, nomorNota:document.querySelector('#isiNomorNota').value, toko:document.querySelector('#isiNamaToko').value, tanggal:document.querySelector('#pTgl').innerText, halTampil:document.querySelector('#isiHalTampil').value}); //tanggal: toko: #pTgl onclick pTgl pop-up input type='date'
             vXhr.send(vCari);
             vXhr.onload=function(){if(vXhr.status==200){
                 const vMuat1=JSON.parse(vXhr.responseText);
                 const vDivMuat=document.querySelector('#divMuat');
                 fTampil(vMuat1,vDivMuat);
+                //------> buat tampil di form 
             }};
         };
     
@@ -336,6 +352,8 @@
                 vCatat={...vCatat,...vGabung};
             };
             console.log(JSON.stringify(vCatat)+'vCataaaat');
+            vCatatSisip=document.querySelector('#vlCatatSisip').textContent;
+            if (vCatatSisip='sisip'){vTanggal=document.querySelector('#pTgl').innerText}else if(vCatatSisip='catat'){console.log('catat ya vTanggal tetap')}else{console.log('ada salah pas proses catat sisip')}; //cek cek disini
             vCatatTgl={tanggal:vTanggal,...vCatat};
                 const vIsiLocalStorage=localStorage.getItem('AjaxNama') ? JSON.parse(localStorage.getItem('AjaxNama')) : [{nama:"yogi"}];
                 console.log(localStorage.getItem('AjaxNama')+' isiiiii localStorage ');
@@ -370,14 +388,30 @@
             switch(vKlikTombol){
                 case "klikCatat":
                     event.preventDefault();
+                    document.querySelectorAll('#idForm input[type="text"]').forEach(vTxt=>{vTxt.required=true;});
+                    if (document.querySelector('#idForm').reportValidity()){
+                    document.querySelector('#vlCatatSisip').textContent='catat';
                     fCatat(event);
+                    }
+                    document.querySelector('#klikSisipkan').disabled=true;
                     break;
                     alert(vKlikForm);
                 case "klikCari":
                     event.preventDefault();    
+                    document.querySelectorAll('#idForm input[type="text"]').forEach(vTxt=>{vTxt.required=false;});
                     fCari(event);
+                    document.querySelector('#klikSisipkan').removeAttribute('disabled');
                     break;
                     alert(vKlikTombol)
+                case "klikSisipkan":
+                    event.preventDefault();
+                    document.querySelectorAll('#idForm input[type="text"]').forEach(vTxt=>{vTxt.required=true;})
+                    if (document.querySelector('#idForm').reportValidity()){
+                    document.querySelector('#vlCatatSisip').textContent='sisip';
+                    fCatat(event);
+                    }
+                    document.querySelector('#klikSisipkan').disabled=true;
+                    break;
                 case "klikLain":
                     break;
                     alert('case tidak jalan code sampai ketemu case nya, misalnya klikCari, lalu jalankan semua code sampai paling bawah kecuali di break;')

@@ -92,7 +92,7 @@ async function fUtama(){
     async function fBacaNota(vClient,vCariNota,vSkip){
       // await vClient.connect();
       console.log(vCariNota)
-      const vCursor=await vClient.db("IntiCollection").collection("JualBeli").find(vCariNota).sort({tanggal:-1}).skip(vSkip).toArray();
+      const vCursor=await vClient.db("IntiCollection").collection("JualBeli").find(vCariNota).sort({tanggal:1}).skip(vSkip).toArray();
       if (vCursor.length>0){console.log("ada ",vCursor.length,' document(s) nota ',vCursor)}
       res.writeHead(200,{'Content-Type':'text/json'});
       res.write(JSON.stringify(vCursor));

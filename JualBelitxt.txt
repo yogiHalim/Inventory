@@ -18,6 +18,7 @@ table = collection = JualBeli -->IntiCollection.JualBeli
 
 
 mongo
+rename collection: use IntiCollection db.JualBeli.renameCollection("testJualBeli")   ctrl+shift+P launch  mongoDB shell pakai mongosh $Env:MDB_CONNECTION_STRING;
 https://www.youtube.com/watch?v=fbYExfeFsI0&t=138s 
 menit 28:00 ${result.matchedCount} ${result.modifiedCount} 
 {upsert:true} result.upsertCount ${result.upsertedId}
