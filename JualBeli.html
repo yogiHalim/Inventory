@@ -166,7 +166,8 @@
     
 </body>
 <!-- 
-1. rapikan fCari() sisip
+1.  tampil tanggal di input text date
+    rapikan fCari() sisip --cek lagi
 2. buat ganti warna 
 3. buat ulang hal1
 /* ubah warna dengan variabel onklik muat warna dari filetxt*/
@@ -195,6 +196,7 @@
     }
         document.querySelector('#pTgl').innerHTML=new Date().toLocaleString("id-id",{weekday:'long',day:'numeric',month:'long',year:'numeric',hour:'numeric',minute:'numeric'}).replace('pukul','pk.');
         vTanggal=new Date(Date.now()+25200000).toISOString().replace(/[^\d]/g,'').slice(0,17); //to isostring + 7 jam replace ./; //hati-hati awalan nol number dihilangkan? untung disini awalan 2024 bukan tanggal //ga jadi slice 12 (sampai menit) karena perlu sisipkan yang kelewat ketik, pakai tanggal+1
+        document.querySelector('#isiTgl').textContent=document.querySelector('#pTgl').innerHTML;
         document.querySelector('#isiTgl').addEventListener('input',function(event){document.querySelector('#isiTgl').textContent=event.target.value})
         function fTotal(){document.querySelector('#pTotal').innerHTML='Total = Rp.'+new Intl.NumberFormat('id-id').format(document.querySelector('#isiJumlah').value*document.querySelector('#isiHarga').value);console.log('haiiii pTotal')};
 
@@ -219,7 +221,7 @@
             document.querySelector('#isiHarga').placeholder='Harga '+vJualBeli;
         };
 
-        function fToggleAjaxNama(event){event.preventDefault();document.querySelectorAll('#alertAjaxNama,#alertAjaxNamaX,#alertAjaxNamaDiv').forEach(vId=> {vId.classList.toggle('cToggleAjaxNama')})}; fToggleAjaxNama(event)
+        function fToggleAjaxNama(){if(event){ event.preventDefault();}; document.querySelectorAll('#alertAjaxNama,#alertAjaxNamaX,#alertAjaxNamaDiv').forEach(vId=> {vId.classList.toggle('cToggleAjaxNama')})}; fToggleAjaxNama();
         function fAjaxNama(){
             const vMuatAjaxNamaDi=document.querySelector('#alertAjaxNama')
             const seenNama={};
